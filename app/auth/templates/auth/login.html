@@ -1,23 +1,31 @@
-<html>
-<head>
-    <title>My web page</title>
-</head>
-<body>
-    <h1>Sign in</h1>
-    <form action="" method="POST" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }} <br>
-            {{ form.username(size=32) }}
+{% extends "base.html" %}
+{% block body %}
+<h1>Sign in</h1>
+<!-- Displaying messages -->
+{% with msgs = get_flashed_messages(with_categories=true) %} {% if msgs %}
+<ul>
+  {% for category, message in msgs %}
+  <li>{{category | title}} : {{message}}</li>
+  {% endfor %}
+</ul>
+{% endif %} {% endwith %}
+<form action="" method="POST" novalidate>
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.username.label }} <br />
+    {{ form.username(size=32) }}
+  </p>
 
-        </p>
+  <p>
+    {{form.password.label}} <br />
+    {{form.password(size=32)}}
+  </p>
 
-         <p> {{form.password.label}} <br>
-            {{form.password(size=32)}}</p>
+  <p>
+    {{form.remember_me.label}} <br />
+    {{form.remember_me()}}
+  </p>
 
-        <p> {{form.remember_me.label}} <br>
-       {{form.remember_me()}}</p>
-
-    <p>{{form.submit()}}</p>
-    </form>
-</body>
+  <p>{{form.submit()}}</p>
+</form>
+{% endblock %}

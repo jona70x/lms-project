@@ -6,3 +6,4 @@ from app import create_app
 def home():
     users = {'username' : 'Jonathan'}
     return render_template("base.html", users=users)
+

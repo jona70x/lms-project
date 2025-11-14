@@ -1,8 +1,21 @@
-from flask import render_template
-from app import create_app
+from flask import render_template, Blueprint, request, flash
+from app.forms import LoginForm
 
-# root route
-@create_app.route('/auth/login')
-def home():
-    users = {'username' : 'Jonathan'}
-    return render_template("login.html", users=users)
+authentication_bp = Blueprint("auth", __name__, template_folder='templates')
+
+@authentication_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+
+    # Rendering flash message with post
+    if request.method == 'POST':
+        form.validate()
+        flash('Method not impleted, yet', 'warning')
+        return render_template("auth/login.html", form=form), 200
+
+
+    # Rendering from on get
+    return render_template("auth/login.html", form=form)
+
+
+
