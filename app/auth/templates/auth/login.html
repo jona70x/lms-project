@@ -1,11 +1,10 @@
-{% extends "base.html" %}
-{% block body %}
+{% extends "base.html" %} {% block body %}
 <h1>Sign in</h1>
 <!-- Displaying messages -->
 {% with msgs = get_flashed_messages(with_categories=true) %} {% if msgs %}
 <ul>
   {% for category, message in msgs %}
-  <li>{{category | title}} : {{message}}</li>
+  <li class="text-danger-emphasis">{{category | title}} : {{message}}</li>
   {% endfor %}
 </ul>
 {% endif %} {% endwith %}
