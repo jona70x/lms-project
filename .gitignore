@@ -7,10 +7,4 @@ __pycache__/
 .env
 .venv/
 .env.*
-instance/
-app.db
-# OS
-.DS_Store
-Thumbs.db
-# VS Code
 .vscode/
