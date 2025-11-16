@@ -49,7 +49,7 @@ IntelliGrades is a Flask-based web application designed to improve educational w
 
 1. **Activate the virtual environment**:
    ```bash
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   source .venv/bin/activate  # For macOS
    ```
 
 2. **Run the Flask app**:
@@ -66,7 +66,7 @@ IntelliGrades is a Flask-based web application designed to improve educational w
 
 ## Meet the Team
 
--Sofware Engineer: Jonathan Carpio
--Project Manager: Rahaf Mohammed
--Tester/Developer: Vern Toor
+- Sofware Engineer: Jonathan Carpio
+- Project Manager: Rahaf Mohammed
+- Tester/Developer: Vern Toor
 
