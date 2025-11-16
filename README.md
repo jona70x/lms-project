@@ -70,3 +70,10 @@ IntelliGrades is a Flask-based web application designed to improve educational w
 - Project Manager: Rahaf Mohammed
 - Tester/Developer: Vern Toor
 
+## App Preview
+
+**index.html**
+<img width="990" height="954" alt="Screenshot 2025-11-15 at 11 15 01 PM" src="https://github.com/user-attachments/assets/c60deb43-742e-41a6-a460-2e550622fcd1" />
+
+**login.html rendered on /auth/login route with flashed messages**
+<img width="990" height="954" alt="Screenshot 2025-11-15 at 11 15 07 PM" src="https://github.com/user-attachments/assets/b74a2c8d-a27c-4c83-9b9a-9a4ed72af4eb" />
