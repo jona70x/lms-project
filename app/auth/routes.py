@@ -11,7 +11,7 @@ def login():
     if request.method == 'POST':
         form.validate()
         flash('Method not impleted, yet', 'warning')
-        return render_template("auth/login.html", form=form), 200
+        return render_template("auth/login.html", form=form)
 
 
     # Rendering from on get
