@@ -4,7 +4,7 @@ As a part of our Software Engineering class, we are building **IntelliGrades**, 
 
 ## Project Overview
 
-IntelliGrades is a Flask-based web application designed to improve educational workflows. It provides as right now:
+IntelliGrades is a Flask-based web application designed to improve educational workflows. Working on the following features as right now:
 - User authentication (sign-in/sign-up)
 - Course and assignment management
 - Grade tracking and reporting
