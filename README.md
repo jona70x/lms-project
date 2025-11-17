@@ -73,7 +73,16 @@ IntelliGrades is a Flask-based web application designed to improve educational w
 ## App Preview
 
 **index.html**
+
 <img width="990" height="954" alt="Screenshot 2025-11-15 at 11 15 01 PM" src="https://github.com/user-attachments/assets/c60deb43-742e-41a6-a460-2e550622fcd1" />
 
 **login.html rendered on /auth/login route with flashed messages**
+
 <img width="990" height="954" alt="Screenshot 2025-11-15 at 11 15 07 PM" src="https://github.com/user-attachments/assets/b74a2c8d-a27c-4c83-9b9a-9a4ed72af4eb" />
+
+## UI Sketches
+
+<img width="1154" height="723" alt="Screenshot 2025-11-16 at 10 37 02 PM" src="https://github.com/user-attachments/assets/f7b2eac1-a8c9-45c4-8a94-200d33f6f7a8" />
+<img width="1155" height="720" alt="Screenshot 2025-11-16 at 10 36 16 PM" src="https://github.com/user-attachments/assets/be4f62e3-5778-4422-9cd5-70ea2161371a" />
+<img width="476" height="776" alt="Screenshot 2025-11-16 at 10 54 30 PM" src="https://github.com/user-attachments/assets/42cc1d83-a5bf-4466-a8fb-e14000427b5e" />
+<img width="599" height="776" alt="Screenshot 2025-11-16 at 10 54 49 PM" src="https://github.com/user-attachments/assets/de925e2c-8d52-49ea-8475-343646fa4d65" />
