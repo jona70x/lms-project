@@ -1,30 +1,59 @@
 {% extends "base.html" %} {% block body %}
-<h1>Sign in</h1>
-<!-- Displaying messages -->
-{% with msgs = get_flashed_messages(with_categories=true) %} {% if msgs %}
-<ul>
-  {% for category, message in msgs %}
-  <li class="text-danger-emphasis">{{category | title}} : {{message}}</li>
-  {% endfor %}
-</ul>
-{% endif %} {% endwith %}
-<form action="" method="POST" novalidate>
-  {{ form.hidden_tag() }}
-  <p>
-    {{ form.username.label }} <br />
-    {{ form.username(size=32) }}
-  </p>
+<div class="container mt-5">
+  <h2>Sign In</h2>
 
-  <p>
-    {{form.password.label}} <br />
-    {{form.password(size=32)}}
-  </p>
+  <!-- Display flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %} {% for category, message in messages %}
+  <div
+    class="alert alert-{{ category }} alert-dismissible fade show"
+    role="alert"
+  >
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endfor %} {% endif %} {% endwith %}
 
-  <p>
-    {{form.remember_me.label}} <br />
-    {{form.remember_me()}}
-  </p>
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
 
-  <p >{{form.submit()}}</p>
-</form>
+    <!-- Email -->
+    <div class="mb-3">
+      {{ form.email.label(class="form-label") }} {{
+      form.email(class="form-control", size=32) }} {% if form.email.errors %}
+      <div class="text-danger">
+        {% for error in form.email.errors %}
+        <small>{{ error }}</small>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+      {{ form.password.label(class="form-label") }} {{
+      form.password(class="form-control", size=32) }} {% if form.password.errors
+      %}
+      <div class="text-danger">
+        {% for error in form.password.errors %}
+        <small>{{ error }}</small>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Remember me -->
+    <div class="mb-3 form-check">
+      {{ form.remember_me(class="form-check-input") }} {{
+      form.remember_me.label(class="form-check-label") }}
+    </div>
+
+    <!-- Submit -->
+    {{ form.submit(class="btn btn-primary") }}
+  </form>
+
+  <p class="mt-3">
+    New user? <a href="{{ url_for('auth.register') }}">Register here</a>
+  </p>
+</div>
 {% endblock %}
