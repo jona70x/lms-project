@@ -10,7 +10,7 @@ def populate_courses():
             'title': 'General Physics II',
             'description': 'A calculus-based introduction to electricity and magnetism, covering electric charges, electric and magnetic fields, dc and ac circuits, and electromagnetic waves.',
             'credits': 4,
-            'professor': 'Joe Doe',
+            'professor': 'John Doe',
             'availability': True,
             'format': 'online',
             'max_students': 30

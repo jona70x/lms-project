@@ -9,7 +9,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     password_hash = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    avatar_url = db.Column(db.String(400), nullable=False)
+    avatar_url = db.Column(db.String(400), nullable=True)
     role = db.Column(db.String(32), default='student')  # role could be student | instructor | admin
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     # course relationship
@@ -20,6 +20,13 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    # to check if student or professor
+    # def is_professor(self):
+    #     return self.role == 'professor'
+    
+    # def is_student(self):
+    #     return self.role == 'student'
     
     ### methods for course management
 
@@ -50,6 +57,10 @@ class User(UserMixin, db.Model):
     # returns all number of enrolled courses
     def get_enrolled_courses_count(self):
         return len(self.course_enrollments)
+    
+    # For course management (professor role)
+    # def get_created_courses(self):
+    #     return Course.query.filter_by(professor_id=id).all()
 
     def __repr__(self):
         return f"<User {self.email}>"
@@ -63,6 +74,7 @@ class Course(db.Model):
     description = db.Column(db.Text)
     credits = db.Column(db.Integer, nullable=False)  # number of units/credits
     professor = db.Column(db.String(128), nullable=False)
+    # professor_id = db.Column(db.Integer, db.ForeignKey('users.id')) # id of user who created the course
     availability = db.Column(db.Boolean, default=True)
     format = db.Column(db.String(32), default='online')
     max_students = db.Column(db.Integer)
@@ -83,6 +95,10 @@ class Course(db.Model):
     # checks if we can enroll in a course
     def is_available(self):
         return self.availability and (self.max_students is None or self.get_student_count() < self.max_students)
+    
+    # course management
+    # relationship with professor
+    # professor = db.relationship('User', foreign_keys=[professor_id], backref='created_courses')
     
     def __repr__(self):
         return f'<Course {self.code}: {self.title}'
