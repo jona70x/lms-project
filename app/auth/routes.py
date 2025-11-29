@@ -26,7 +26,7 @@ def register():
         db.session.commit()
 
         # if success display message
-        flash('Registration successful!, Pleae login in', 'success')
+        flash('Registration successful!, Please login in', 'success')
 
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
@@ -38,8 +38,6 @@ def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
-
-
 
 
 @authentication_bp.route('/login', methods=['GET', 'POST'])

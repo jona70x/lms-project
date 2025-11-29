@@ -1,0 +1,82 @@
+{% extends "base.html" %} {% block body %}
+<div class="container mt-5">
+  <h2>Available Courses</h2>
+
+  {% if courses %}
+  <div class="row g-5 mt-3">
+    {% for item in courses %}
+    <div class="col-md-6 col-lg-4">
+      <a
+        href="{{ url_for('main.course_detail', course_id=item.course.id) }}"
+        class="text-decoration-none"
+      >
+        <div class="card border-success pointer h-100 course-card">
+          <div class="card-body">
+            <!-- Course Code and Title -->
+            <h5 class="card-title">{{ item.course.code }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+              {{ item.course.title }}
+            </h6>
+
+            <!-- Course Details -->
+            <p class="card-text">
+              <small>
+                <strong>Units:</strong> {{ item.course.credits }} |
+                <strong>Format:</strong> {{ item.course.format }}<br />
+                <strong>Professor:</strong> {{ item.course.professor }}<br />
+                <strong>Enrolled:</strong> {{ item.course.get_student_count() }}
+                {% if item.course.max_students %} / {{ item.course.max_students
+                }} {% endif %}
+              </small>
+            </p>
+
+            <p class="card-text">{{ item.course.description }}</p>
+
+            <!-- Availability Status -->
+            {% if item.course.availability %}
+            <span class="badge bg-success">Available</span>
+            {% else %}
+            <span class="badge bg-danger">Closed</span>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+
+      <!-- Action Buttons (Outside Link) -->
+      <div class="mt-2">
+        {% if current_user.is_authenticated %} {% if item.is_enrolled %}
+        <form
+          method="POST"
+          action="{{ url_for('main.drop_course', course_id=item.course.id) }}"
+          style="display: inline"
+        >
+          <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+            Drop Course
+          </button>
+        </form>
+        {% elif item.course.availability %}
+        <form
+          method="POST"
+          action="{{ url_for('main.enroll_course', course_id=item.course.id) }}"
+          style="display: inline"
+        >
+          <button type="submit" class="btn btn-sm btn-primary w-100">
+            Enroll
+          </button>
+        </form>
+        {% endif %} {% else %}
+        <a
+          href="{{ url_for('auth.login') }}"
+          class="btn btn-sm btn-outline-primary w-100"
+          >Login to Enroll</a
+        >
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="alert alert-info mt-3">No courses available.</p>
+  {% endif %}
+</div>
+{% endblock %}

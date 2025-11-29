@@ -4,7 +4,7 @@ from app.models import User
 
 # create_app is already a Flask instance, not a function
 with create_app.app_context():
-    # Drop all tables and recreate (fresh start)
+    # Drop all tables and recreate 
     db.drop_all()
     db.create_all()
     print("Database tables created successfully")
@@ -20,8 +20,4 @@ with create_app.app_context():
     db.session.add(test_user)
     db.session.commit()
     
-    print("\n✅ Test user created:")
-    print(f"   Email: test@example.com")
-    print(f"   Password: password123")
-    print(f"   Role: {test_user.role}")
-    print("\nYou can now login with these credentials!")
+    print("Test user created")

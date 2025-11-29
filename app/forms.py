@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 from app.models import User
 
@@ -23,3 +23,11 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Email already registered. Please use another')
+        
+"""Enroll in course form in detil page to enroll. Just a submit button
+""" 
+class EnrollCourseForm(FlaskForm):
+    submit = SubmitField('Enroll in course')
+"""Form to drop if user is enrolled in course"""
+class DropCourseForm(FlaskForm):
+    submit = SubmitField("Drop Course")

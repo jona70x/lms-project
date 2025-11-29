@@ -33,7 +33,19 @@
             <!-- Show if user is authenticated -->
             {% if current_user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.index') }}">Courses</a>
+              <a class="nav-link" href="{{ url_for('main.dashboard') }}"
+                >Dashboard</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.courses_list') }}"
+                >Browse Courses</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.my_courses') }}"
+                >My Courses ({{ current_user.get_enrolled_courses_count() }})</a
+              >
             </li>
             {% endif %}
           </ul>

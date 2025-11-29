@@ -4,7 +4,7 @@ from app.auth.routes import authentication_bp
 from app.main.routes import main_bp
 """For login functionality"""
 from flask_login import LoginManager
-from app.models import User
+from app.models import User, Course, Enrollment
 
 login_manager = LoginManager()
 

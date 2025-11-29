@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block body %}
+<div class="container mt-5">
+  <h2>My Enrolled Courses</h2>
+
+  {% if courses %}
+  <table class="table table-striped mt-4">
+    <thead class="table-dark">
+      <tr>
+        <th>Code</th>
+        <th>Title</th>
+        <th>Units</th>
+        <th>Professor</th>
+        <th>Format</th>
+        <th>Enrolled Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for course in courses %}
+      <tr>
+        <td>{{ course.code }}</td>
+        <td>{{ course.title }}</td>
+        <td>{{ course.credits }}</td>
+        <td>{{ course.professor }}</td>
+        <td><span class="badge bg-info">{{ course.format }}</span></td>
+        <td>
+          {% set enrollment =
+          course.enrollments_rel.filter_by(user_id=current_user.id).first() %}
+          {{ enrollment.enrolled_at.strftime('%b %d, %Y') if enrollment else
+          'N/A' }}
+        </td>
+        <td>
+          <form
+            method="POST"
+            action="{{ url_for('main.drop_course', course_id=course.id) }}"
+            style="display: inline"
+          >
+            <button
+              type="submit"
+              class="btn btn-sm btn-danger"
+              onclick="return confirm('Drop this course?')"
+            >
+              Drop
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="mt-3">
+    <strong>Total Enrolled:</strong> {{ courses|length }} courses
+  </div>
+  {% else %}
+  <p class="alert alert-warning mt-3">
+    You are not enrolled in any courses.
+    <a href="{{ url_for('main.courses_list') }}">Browse available courses</a>
+  </p>
+  {% endif %}
+</div>
+{% endblock %}
