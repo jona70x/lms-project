@@ -16,8 +16,21 @@ def index():
 
 # dashboard
 @main_bp.route('/dashboard')
+@login_required
 def dashboard():
-    return render_template("/main/dashboard.html")
+
+    all_courses = Course.query.all()
+
+    notifications = [
+        "You haven’t checked Week 3 notes.",
+        "New message in CMPE 102 discussion board."
+    ]
+
+    return render_template(
+        "/main/dashboard.html",
+        courses=all_courses,
+        notifications=notifications
+    )
 
 
 ##### Routes from courses
