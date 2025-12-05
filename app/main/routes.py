@@ -2,6 +2,7 @@ from flask import render_template, Blueprint, request, jsonify, flash, redirect,
 from flask_login import login_required, current_user
 from app.models import Course, User
 from app.config import db
+from app.main.course_form import CourseForm
 from app.forms import EnrollCourseForm, DropCourseForm
 
 
@@ -112,3 +113,45 @@ def course_detail(course_id):
     
     return render_template('main/course_detail.html', course=course, is_enrolled=is_enrolled, enrolled_count=enrolled_count, available_spots=available_spots)
 
+
+# New courses route
+@main_bp.route("/courses/new", methods=['GET','POST'])
+@login_required
+def create_course():
+    course_form = CourseForm()
+
+    if course_form.validate_on_submit():
+       course_data= {'code' : course_form.code.data,
+        'title' : course_form.title.data,
+        'description': course_form.description.data, 
+        'credits' : course_form.credits.data,
+        'professor' : course_form.professor.data,
+        'availability' : course_form.availability.data,
+        'format': course_form.format.data,
+        'max_students' : course_form.max_students.data
+       }
+
+       new_course = Course(**course_data)
+       
+       db.session.add(new_course)
+
+       db.session.commit()
+
+       flash('Course added! Check it in dashboard')
+       return redirect(url_for('main.index'))
+
+
+    return render_template('main/new_course.html', form = course_form)
+
+"""
+  {
+            'code': 'PHYS51',
+            'title': 'General Physics II',
+            'description': 'A calculus-based introduction to electricity and magnetism, covering electric charges, electric and magnetic fields, dc and ac circuits, and electromagnetic waves.',
+            'credits': 4,
+            'professor': 'John Doe',
+            'availability': True,
+            'format': 'online',
+            'max_students': 30
+        },
+"""

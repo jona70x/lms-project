@@ -1,0 +1,118 @@
+{% extends "base.html" %} {% block body %}
+<div class="container mt-5 w-50">
+  <h2>Create a new course</h2>
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+
+    <!-- Code field -->
+    <div class="mb-3">
+      {{ form.code.label(class="form-label") }} {{
+      form.code(class="form-control") }} {% if form.code.errors %}
+      <div class="text-danger">
+        {% for error in form.code.errors %}
+        <small>{{ error }}</small>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <!-- Title field -->
+    <div class="mb-3">
+      {{ form.title.label(class="form-label") }} {{
+      form.title(class="form-control") }} {% if form.title.errors %}
+      <div class="text-danger">
+        {% for error in form.title.errors %}
+        <small>{{ error }}</small>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <!-- Description field -->
+    <div class="mb-3">
+      {{ form.description.label(class="form-label") }} {{
+      form.description(class="form-control") }} {% if form.description.errors %}
+      <div class="text-danger">
+        {% for error in form.description.errors %}
+        <small>{{ error }}</small>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <!-- Credits field -->
+    <div class="mb-3">
+      {{ form.credits.label(class="form-label") }} {{
+      form.credits(class="form-control") }} {% if form.credits.errors %}
+      <div class="text-danger">
+        {% for error in form.credits.errors %}
+        <small>{{ error }}</small>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <!-- Professor field -->
+    <div class="mb-3">
+      {{ form.professor.label(class="form-label") }} {{
+      form.professor(class="form-control") }} {% if form.professor.errors %}
+      <div class="text-danger">
+        {% for error in form.professor.errors %}
+        <small>{{ error }}</small>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Availability field -->
+    <div class="mb-3">
+      {{form.availability()}}
+      {{ form.availability.label(class="form-label") }} {% if
+      form.availability.errors %}
+      <div class="text-danger">
+        {% for error in form.availability.errors %}
+        <small>{{ error }}</small>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Format field -->
+    <div class="mb-3">
+      {{ form.format.label(class="form-label") }} {{
+      form.format(class="form-control") }} {% if form.format.errors %}
+      <div class="text-danger">
+        {% for error in form.format.errors %}
+        <small>{{ error }}</small>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Max students field -->
+    <div class="mb-3">
+      {{ form.max_students.label(class="form-label") }} {{
+      form.max_students(class="form-control") }} {% if form.max_students.errors
+      %}
+      <div class="text-danger">
+        {% for error in form.max_students.errors %}
+        <small>{{ error }}</small>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Submit button -->
+    {{ form.submit(class="btn btn-primary") }}
+  </form>
+</div>
+{% endblock %}
+
+<!-- """
+  {
+            'code': 'PHYS51',
+            'title': 'General Physics II',
+            'description': 'A calculus-based introduction to electricity and magnetism, covering electric charges, electric and magnetic fields, dc and ac circuits, and electromagnetic waves.',
+            'credits': 4,
+            'professor': 'John Doe',
+            'availability': True,
+            'format': 'online',
+            'max_students': 30
+        },
+""" -->
