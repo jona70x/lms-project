@@ -23,7 +23,7 @@ def dashboard():
 
 ##### Routes from courses
 # gets all available courses
-@main_bp.route('courses')
+@main_bp.route('/courses')
 def courses_list():
     all_courses = Course.query.all()
 
@@ -138,11 +138,24 @@ def create_course():
        db.session.commit()
 
        flash('Course added! Check it in dashboard')
-       return redirect(url_for('main.index'))
+       return redirect(url_for('main.courses_list'))
 
 
     return render_template('main/new_course.html', form = course_form)
 
+
+# Delete course
+@main_bp.route('/courses/<int:course_id>/delete', methods=['POST'])
+@login_required
+def delete_course(course_id):
+    course = Course.query.filter_by(id =course_id).first()
+    
+    # delete course
+    db.session.delete(course)
+    db.session.commit()
+    
+    flash(f'Course {course.title} deleted', 'success')
+    return redirect(url_for('main.courses_list'))
 """
   {
             'code': 'PHYS51',

@@ -6,10 +6,10 @@ from app.models import Course
 class CourseForm(FlaskForm):
     code = StringField('Code', validators=[DataRequired()])
     title = StringField('Title', validators=[DataRequired(), Length(min=6)])
-    description = TextAreaField('Description', [Length(min=20)])
+    description = TextAreaField('Description')
     credits = IntegerField('Credits', [DataRequired()])
     professor = StringField('Professor', [DataRequired()])
-    availability = BooleanField('Availability', [DataRequired()], default=True)
+    availability = BooleanField('Availability', default=False)
     format = SelectField('Format', choices=['online', 'in-person'])
     max_students = IntegerField('Maximux Students', [DataRequired()])
     submit = SubmitField('Create course', render_kw={"class": "btn btn-primary border-primary-subtle"})
