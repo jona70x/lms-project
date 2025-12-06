@@ -57,8 +57,21 @@ def create_assignment():
 
 # Assignment detail page
 @assignments_bp.route('/<int:assignment_id>')
+@login_required
 def assignment_detail(assignment_id):
     assignment = Assignment.query.get_or_404(assignment_id)
     course = assignment.course  # Get the course using the relationship backref
     
     return render_template('assignments/assignment_details.html', assignment=assignment, course=course)
+
+
+# deletes assignment
+@assignments_bp.route('/<int:assignment_id>/delete', methods=['POST'])
+@login_required
+def delete_assignment(assignment_id):
+    assignment = Assignment.query.get_or_404(assignment_id)
+    db.session.delete(assignment)
+    db.session.commit()
+    flash('success, assignment deleted', 'success')
+
+    return redirect(url_for('assignments.index'))
