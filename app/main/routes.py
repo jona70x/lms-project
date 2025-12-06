@@ -153,18 +153,42 @@ def delete_course(course_id):
     # delete course
     db.session.delete(course)
     db.session.commit()
-    
+
     flash(f'Course {course.title} deleted', 'success')
-    return redirect(url_for('main.courses_list'))
-"""
-  {
-            'code': 'PHYS51',
-            'title': 'General Physics II',
-            'description': 'A calculus-based introduction to electricity and magnetism, covering electric charges, electric and magnetic fields, dc and ac circuits, and electromagnetic waves.',
-            'credits': 4,
-            'professor': 'John Doe',
-            'availability': True,
-            'format': 'online',
-            'max_students': 30
-        },
-"""
+
+
+# Update course
+@main_bp.route('/courses/<int:course_id>/update', methods=['GET', 'POST'])
+@login_required
+def update_course(course_id):
+
+    course_info = Course.query.filter_by(id=course_id).first()
+    course_form = CourseForm()
+
+    # Pre-populate form on GET request
+    if request.method == 'GET' and course_info: 
+        course_form.code.data = course_info.code
+        course_form.title.data = course_info.title
+        course_form.description.data = course_info.description
+        course_form.credits.data = course_info.credits
+        course_form.professor.data = course_info.professor
+        course_form.availability.data = course_info.availability
+        course_form.format.data = course_info.format
+        course_form.max_students.data = course_info.max_students
+    # Updating all fields
+    if course_form.validate_on_submit():
+       course_info.code = course_form.code.data
+       course_info.title = course_form.title.data
+       course_info.description = course_form.description.data
+       course_info.credits = course_form.credits.data
+       course_info.professor = course_form.professor.data
+       course_info.availability = course_form.availability.data
+       course_info.format = course_form.format.data
+       course_info.max_students = course_form.max_students.data
+       db.session.add(course_info)
+       db.session.commit()
+
+       flash('Course updated! Check it in dashboard', 'success')
+       return redirect(url_for('main.courses_list'))
+
+    return render_template('main/update_course.html', form=course_form, course_info=course_info)

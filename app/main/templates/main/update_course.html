@@ -1,13 +1,14 @@
-{% extends "base.html" %} {% block body %}
+{% extends "base.html" %} {%block body %}
 <div class="container mt-5 w-50">
-  <h2>Create a new course</h2>
+  <h2>Update {{course_info.title}}</h2>
   <form method="POST" novalidate>
     {{ form.hidden_tag() }}
 
     <!-- Code field -->
     <div class="mb-3">
       {{ form.code.label(class="form-label") }} {{
-      form.code(class="form-control") }} {% if form.code.errors %}
+      form.code(class="form-control") }} {% if
+      form.code.errors %}
       <div class="text-danger">
         {% for error in form.code.errors %}
         <small>{{ error }}</small>
@@ -62,9 +63,8 @@
 
     <!-- Availability field -->
     <div class="mb-3">
-      {{form.availability()}}
-      {{ form.availability.label(class="form-label") }} {% if
-      form.availability.errors %}
+      {{form.availability()}} {{ form.availability.label(class="form-label") }}
+      {% if form.availability.errors %}
       <div class="text-danger">
         {% for error in form.availability.errors %}
         <small>{{ error }}</small>
@@ -99,8 +99,7 @@
     </div>
 
     <!-- Submit button -->
-    {{ form.submit(class="btn btn-primary") }}
+    {{ form.update(class="btn btn-primary") }}
   </form>
 </div>
 {% endblock %}
-

@@ -13,7 +13,10 @@ class CourseForm(FlaskForm):
     format = SelectField('Format', choices=['online', 'in-person'])
     max_students = IntegerField('Maximux Students', [DataRequired()])
     submit = SubmitField('Create course', render_kw={"class": "btn btn-primary border-primary-subtle"})
+    update = SubmitField('Update course', render_kw={"class": "btn btn-primary border-primary-subtle"})
 
+    def set_data(self):
+        pass
 
 
 
