@@ -9,9 +9,22 @@ from app.assignments.assignment_form import AssignmentForm
 
 assignments_bp = Blueprint("assignments", __name__, template_folder='templates')
 
+#displays all the assignments by course
 @assignments_bp.route('/')
 def index():
-    return '<h1>Working</h1>'
+    all_courses = Course.query.all()
+
+    courses_with_assignments = []
+    for course in all_courses:
+        assignments = course.assignments.all()
+
+        courses_with_assignments.append({
+            'course': course,
+            'assignments': assignments,
+            'assignment_count': len(assignments)
+        })
+    
+    return render_template('assignments/assignments_list.html', courses_with_assignments=courses_with_assignments)
 
 
 #create new assignment route
@@ -37,6 +50,8 @@ def create_assignment():
 
         flash('Assignment created!', 'success')
 
-        return redirect(url_for('main.index'))
+        return redirect(url_for('assignments.index'))
     
     return render_template('assignments/new_assignment.html', form=form)
+
+

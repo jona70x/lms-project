@@ -1,16 +1,14 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, IntegerField, DateField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Optional
 from app.models import Course
 
 class AssignmentForm(FlaskForm):
     course_id = SelectField('Select course', coerce=int, validators=[DataRequired()])
-    title = StringField('Title', validators=[DataRequired(), Length(min=6)])
-    description = TextAreaField('Description')
-    credits = IntegerField('Credits', [DataRequired()])
-    professor = StringField('Professor', [DataRequired()])
-    due_date = DateField('Due date', format='%Y-%m-%d %H:%M',  default=False)
-    max_points = IntegerField('Max grade points', [DataRequired()])
+    title = StringField('Title', validators=[DataRequired(), Length(min=3, max=200)])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    due_date = DateField('Due date', format='%Y-%m-%d', validators=[Optional()])
+    max_points = IntegerField('Max grade points', validators=[DataRequired()], default=100)
     submit = SubmitField('Create Assignment', render_kw={"class": "btn btn-primary border-primary-subtle"})
     update = SubmitField('Update Assignment', render_kw={"class": "btn btn-primary border-primary-subtle"})
 
