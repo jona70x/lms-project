@@ -27,7 +27,7 @@ def dashboard():
     ]
 
     return render_template(
-        "/main/dashboard.html",
+        "main/dashboard.html",
         courses=all_courses,
         notifications=notifications
     )
