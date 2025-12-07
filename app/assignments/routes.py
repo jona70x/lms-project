@@ -2,8 +2,6 @@ from flask import render_template, Blueprint, request, jsonify, flash, redirect,
 from flask_login import login_required, current_user
 from app.models import Course, User, Assignment
 from app.config import db
-from app.main.course_form import CourseForm
-from app.forms import EnrollCourseForm, DropCourseForm
 from app.assignments.assignment_form import AssignmentForm
 
 
@@ -75,3 +73,35 @@ def delete_assignment(assignment_id):
     flash('success, assignment deleted', 'success')
 
     return redirect(url_for('assignments.index'))
+
+@assignments_bp.route('/<int:assignment_id>/edit', methods=['GET','POST'])
+@login_required
+def edit_assignment(assignment_id):
+
+    assignment = Assignment.query.filter_by(id=assignment_id).first()
+    course = assignment.course
+    form = AssignmentForm()
+
+    # Pre-populate form on GET request
+    if request.method == 'GET' and assignment: 
+        form.course_id.data = course.id
+        form.title.data = assignment.title
+        form.description.data = assignment.description
+        form.max_points.data = assignment.max_points
+        form.due_date.data = assignment.due_date
+    
+    # Updating all fields
+    if form.validate_on_submit():
+       assignment.course_id = form.course_id.data
+       assignment.title = form.title.data
+       assignment.description = form.description.data
+       assignment.max_points = form.max_points.data
+       assignment.due_date = form.due_date.data
+       db.session.add(assignment)
+       db.session.commit()
+
+       flash('Assignment edited! Check it on the assignments list', 'success')
+       return redirect(url_for('assignments.index'))
+
+    return render_template('assignments/update_assignment.html', form=form, assignment=assignment)
+
