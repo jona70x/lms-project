@@ -26,39 +26,46 @@
 
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
-            </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+  </li>
 
-            <!-- Show if user is authenticated -->
-            {% if current_user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.dashboard') }}"
-                >Dashboard</a
-              >
-            </li>
-             <li class="nav-item">
+  <!-- Show if user is authenticated -->
+  {% if current_user.is_authenticated %}
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('main.dashboard') }}">
+      Dashboard
+    </a>
+  </li>
+   <li class="nav-item">
               <a class="nav-link" href="{{ url_for('assignments.index') }}"
                 >Assignments</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.courses_list') }}"
-                >Browse Courses</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.my_courses') }}"
-                >My Courses ({{ current_user.get_enrolled_courses_count() }})</a
-              >
-            </li>
+    <a class="nav-link" href="{{ url_for('main.courses_list') }}">
+      Browse Courses
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('main.my_courses') }}">
+      My Courses ({{ current_user.get_enrolled_courses_count() }})
+    </a>
+  </li>
+  <!-- GPA Calculator link -->
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('main.gpa_calculator') }}">
+      GPA Calculator
+    </a>
+  </li>
               <li class="nav-item">
               <a class="nav-link" href="{{ url_for('main.create_course') }}"
                 >New Course</a
               >
             </li>
-            {% endif %}
-          </ul>
+  {% endif %}
+</ul>
+
 
           <ul class="navbar-nav">
             <!-- Show if NOT authenticated -->

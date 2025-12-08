@@ -17,8 +17,21 @@ def index():
 
 # dashboard
 @main_bp.route('/dashboard')
+@login_required
 def dashboard():
-    return render_template("/main/dashboard.html")
+
+    all_courses = Course.query.all()
+
+    notifications = [
+        "You haven’t checked Week 3 notes.",
+        "New message in CMPE 102 discussion board."
+    ]
+
+    return render_template(
+        "main/dashboard.html",
+        courses=all_courses,
+        notifications=notifications
+    )
 
 
 ##### Routes from courses
@@ -192,3 +205,47 @@ def update_course(course_id):
        return redirect(url_for('main.courses_list'))
 
     return render_template('main/update_course.html', form=course_form, course_info=course_info)
+# GPA calculator 
+@main_bp.route('/gpa')
+@login_required
+def gpa_calculator():
+    sample_courses = [
+        {"name": "CS 146 - Data Structures", "units": 4, "grade": "A"},
+        {"name": "CMPE 102 - Assembly Language", "units": 3, "grade": "B+"},
+        {"name": "Math 32 - Calculus II", "units": 4, "grade": "A-"},
+    ]
+
+    current_gpa = 3.75  
+
+    return render_template(
+        "main/gpa_calculator.html",
+        courses=sample_courses,
+        current_gpa=current_gpa
+    )
+
+# Assignments
+@main_bp.route('/courses/<int:course_id>/assignments')
+@login_required
+def assignments_list(course_id):
+    fake_assignments = [
+        {
+            "id": 1,
+            "title": "Homework 1",
+            "due_date": "2025-03-10",
+            "points": 100,
+            "status": "Submitted"
+        },
+        {
+            "id": 2,
+            "title": "Project Proposal",
+            "due_date": "2025-03-15",
+            "points": 50,
+            "status": "Not submitted"
+        },
+    ]
+
+    return render_template(
+        "main/assignments_list.html",
+        course_id=course_id,
+        assignments=fake_assignments
+    )
