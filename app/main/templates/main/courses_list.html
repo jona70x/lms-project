@@ -42,36 +42,46 @@
         </div>
       </a>
 
-      <!-- Action Buttons (Outside Link) -->
-      <div class="mt-2">
-        {% if current_user.is_authenticated %} {% if item.is_enrolled %}
-        <form
-          method="POST"
+     <!-- Action Buttons (Outside Link) -->
+<div class="mt-2">
+
+  <!-- View Assignments button ALWAYS visible -->
+  <a href="{{ url_for('main.assignments_list', course_id=item.course.id) }}"
+     class="btn btn-sm btn-secondary w-100 mb-2">
+    View Assignments
+  </a>
+
+  {% if current_user.is_authenticated %}
+
+    {% if item.is_enrolled %}
+    <form method="POST"
           action="{{ url_for('main.drop_course', course_id=item.course.id) }}"
-          style="display: inline"
-        >
-          <button type="submit" class="btn btn-sm btn-outline-danger w-100">
-            Drop Course
-          </button>
-        </form>
-        {% elif item.course.availability %}
-        <form
-          method="POST"
+          style="display: inline">
+      <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+        Drop Course
+      </button>
+    </form>
+
+    {% elif item.course.availability %}
+    <form method="POST"
           action="{{ url_for('main.enroll_course', course_id=item.course.id) }}"
-          style="display: inline"
-        >
-          <button type="submit" class="btn btn-sm btn-primary w-100">
-            Enroll
-          </button>
-        </form>
-        {% endif %} {% else %}
-        <a
-          href="{{ url_for('auth.login') }}"
-          class="btn btn-sm btn-outline-primary w-100"
-          >Login to Enroll</a
-        >
-        {% endif %}
-      </div>
+          style="display: inline">
+      <button type="submit" class="btn btn-sm btn-primary w-100">
+        Enroll
+      </button>
+    </form>
+    {% endif %}
+
+  {% else %}
+    <a href="{{ url_for('auth.login') }}"
+       class="btn btn-sm btn-outline-primary w-100">
+      Login to Enroll
+    </a>
+  {% endif %}
+
+</div>
+
+
     </div>
     {% endfor %}
   </div>

@@ -27,7 +27,7 @@ def dashboard():
     ]
 
     return render_template(
-        "/main/dashboard.html",
+        "main/dashboard.html",
         courses=all_courses,
         notifications=notifications
     )
@@ -125,3 +125,47 @@ def course_detail(course_id):
     
     return render_template('main/course_detail.html', course=course, is_enrolled=is_enrolled, enrolled_count=enrolled_count, available_spots=available_spots)
 
+# GPA calculator 
+@main_bp.route('/gpa')
+@login_required
+def gpa_calculator():
+    sample_courses = [
+        {"name": "CS 146 - Data Structures", "units": 4, "grade": "A"},
+        {"name": "CMPE 102 - Assembly Language", "units": 3, "grade": "B+"},
+        {"name": "Math 32 - Calculus II", "units": 4, "grade": "A-"},
+    ]
+
+    current_gpa = 3.75  
+
+    return render_template(
+        "main/gpa_calculator.html",
+        courses=sample_courses,
+        current_gpa=current_gpa
+    )
+
+# Assignments
+@main_bp.route('/courses/<int:course_id>/assignments')
+@login_required
+def assignments_list(course_id):
+    fake_assignments = [
+        {
+            "id": 1,
+            "title": "Homework 1",
+            "due_date": "2025-03-10",
+            "points": 100,
+            "status": "Submitted"
+        },
+        {
+            "id": 2,
+            "title": "Project Proposal",
+            "due_date": "2025-03-15",
+            "points": 50,
+            "status": "Not submitted"
+        },
+    ]
+
+    return render_template(
+        "main/assignments_list.html",
+        course_id=course_id,
+        assignments=fake_assignments
+    )

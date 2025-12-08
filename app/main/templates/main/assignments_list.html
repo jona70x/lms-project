@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container mt-4">
+  <h1 class="mb-3">Assignments</h1>
+  <p class="text-muted">Course ID: {{ course_id }}</p>
+
+  {% if assignments %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Due Date</th>
+          <th>Points</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in assignments %}
+        <tr>
+          <td>{{ a.title }}</td>
+          <td>{{ a.due_date }}</td>
+          <td>{{ a.points }}</td>
+          <td>{{ a.status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No assignments yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
