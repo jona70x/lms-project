@@ -95,7 +95,9 @@ class Course(db.Model):
     # checks if we can enroll in a course
     def is_available(self):
         return self.availability and (self.max_students is None or self.get_student_count() < self.max_students)
-    
+    #Course relationship
+    assignments = db.relationship('Assignment', backref='course', lazy='dynamic', cascade='all,delete-orphan')
+
     # course management
     # relationship with professor
     # professor = db.relationship('User', foreign_keys=[professor_id], backref='created_courses')
@@ -124,6 +126,20 @@ class Enrollment(db.Model):
         return f'<Enrollment: User {self.user_id} -> Course {self.course_id}>'
 
 
+# Assignmnets model
+class Assignment(db.Model):
+    __tablename__ = "assignments"
 
+    id= db.Column(db.Integer, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
+    #assignment info
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False )
+    due_date= db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    max_points = db.Column(db.Integer, default=100)
+
+    def __repr__(self):
+        return f'<Assignment {self.title} for Course {self.course_id}>'
 
 

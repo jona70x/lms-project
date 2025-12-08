@@ -37,7 +37,12 @@
       Dashboard
     </a>
   </li>
-  <li class="nav-item">
+   <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('assignments.index') }}"
+                >Assignments</a
+              >
+            </li>
+            <li class="nav-item">
     <a class="nav-link" href="{{ url_for('main.courses_list') }}">
       Browse Courses
     </a>
@@ -53,6 +58,11 @@
       GPA Calculator
     </a>
   </li>
+              <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.create_course') }}"
+                >New Course</a
+              >
+            </li>
   {% endif %}
 </ul>
 
