@@ -2,19 +2,17 @@ import os
 import sys
 import pytest
 
-# Make sure Python can see the project root (where the `app` package lives)
+
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-# Import the actual Flask app object from app/__init__.py
-from app import create_app as flask_app  # in your code, this is the app instance
 
+from app import create_app as flask_app 
 
 @pytest.fixture
 def client():
     """Create a test client for the Flask app."""
-    # here we treat `flask_app` as the app object, not a function
     app = flask_app
     app.config["TESTING"] = True
 
