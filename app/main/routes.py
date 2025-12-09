@@ -2,6 +2,7 @@ from flask import render_template, Blueprint, request, jsonify, flash, redirect,
 from flask_login import login_required, current_user
 from app.models import Course, User
 from app.config import db
+from app.main.course_form import CourseForm
 from app.forms import EnrollCourseForm, DropCourseForm
 
 
@@ -35,7 +36,7 @@ def dashboard():
 
 ##### Routes from courses
 # gets all available courses
-@main_bp.route('courses')
+@main_bp.route('/courses')
 def courses_list():
     all_courses = Course.query.all()
 
@@ -125,6 +126,85 @@ def course_detail(course_id):
     
     return render_template('main/course_detail.html', course=course, is_enrolled=is_enrolled, enrolled_count=enrolled_count, available_spots=available_spots)
 
+
+# New courses route
+@main_bp.route("/courses/new", methods=['GET','POST'])
+@login_required
+def create_course():
+    course_form = CourseForm()
+
+    if course_form.validate_on_submit():
+       course_data= {'code' : course_form.code.data,
+        'title' : course_form.title.data,
+        'description': course_form.description.data, 
+        'credits' : course_form.credits.data,
+        'professor' : course_form.professor.data,
+        'availability' : course_form.availability.data,
+        'format': course_form.format.data,
+        'max_students' : course_form.max_students.data
+       }
+
+       new_course = Course(**course_data)
+       
+       db.session.add(new_course)
+
+       db.session.commit()
+
+       flash('Course added! Check it in dashboard')
+       return redirect(url_for('main.courses_list'))
+
+
+    return render_template('main/new_course.html', form = course_form)
+
+
+# Delete course
+@main_bp.route('/courses/<int:course_id>/delete', methods=['POST'])
+@login_required
+def delete_course(course_id):
+    course = Course.query.filter_by(id =course_id).first()
+    
+    # delete course
+    db.session.delete(course)
+    db.session.commit()
+
+    flash(f'Course {course.title} deleted', 'success')
+
+
+# Update course
+@main_bp.route('/courses/<int:course_id>/update', methods=['GET', 'POST'])
+@login_required
+def update_course(course_id):
+
+    course_info = Course.query.filter_by(id=course_id).first()
+    course_form = CourseForm()
+
+    # Pre-populate form on GET request
+    if request.method == 'GET' and course_info: 
+        course_form.code.data = course_info.code
+        course_form.title.data = course_info.title
+        course_form.description.data = course_info.description
+        course_form.credits.data = course_info.credits
+        course_form.professor.data = course_info.professor
+        course_form.availability.data = course_info.availability
+        course_form.format.data = course_info.format
+        course_form.max_students.data = course_info.max_students
+    # Updating all fields
+    if course_form.validate_on_submit():
+       course_info.code = course_form.code.data
+       course_info.title = course_form.title.data
+       course_info.description = course_form.description.data
+       course_info.credits = course_form.credits.data
+       course_info.professor = course_form.professor.data
+       course_info.availability = course_form.availability.data
+       course_info.format = course_form.format.data
+       course_info.max_students = course_form.max_students.data
+       db.session.add(course_info)
+       db.session.commit()
+
+       flash('Course updated! Check it in dashboard', 'success')
+       return redirect(url_for('main.courses_list'))
+
+    return render_template('main/update_course.html', form=course_form, course_info=course_info)
 # GPA calculator 
 @main_bp.route('/gpa')
 @login_required
