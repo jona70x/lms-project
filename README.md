@@ -68,11 +68,6 @@ python -m app.scripts.populate_db
    ```
 
 
-
-<img width="468" height="165" alt="image" src="https://github.com/user-attachments/assets/900264ab-8cd6-44df-abae-d8fc2940844c" />
-
-
-
 ### Running the Application
 
 1. **Activate the virtual environment**:
