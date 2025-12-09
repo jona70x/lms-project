@@ -7,8 +7,7 @@
     <!-- Code field -->
     <div class="mb-3">
       {{ form.code.label(class="form-label") }} {{
-      form.code(class="form-control") }} {% if
-      form.code.errors %}
+      form.code(class="form-control") }} {% if form.code.errors %}
       <div class="text-danger">
         {% for error in form.code.errors %}
         <small>{{ error }}</small>
@@ -98,8 +97,15 @@
       {% endif %}
     </div>
 
-    <!-- Submit button -->
-    {{ form.update(class="btn btn-primary") }}
+    <!-- Update and Cancel buttons -->
+    <div class="d-flex gap-2">
+      {{ form.update(class="btn btn-primary") }}
+      <a
+        href="{{ url_for('main.course_detail', course_id=course_info.id) }}"
+        class="btn btn-danger border-danger-subtle"
+        >Cancel</a
+      >
+    </div>
   </form>
 </div>
 {% endblock %}

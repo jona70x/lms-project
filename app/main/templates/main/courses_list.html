@@ -3,14 +3,14 @@
   <h2>Available Courses</h2>
 
   {% if courses %}
-  <div class="row g-5 mt-3">
+  <div class="row g-4 mt-3">
     {% for item in courses %}
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 d-flex flex-column">
       <a
         href="{{ url_for('main.course_detail', course_id=item.course.id) }}"
-        class="text-decoration-none"
+        class="text-decoration-none flex-grow-1"
       >
-        <div class="card border-success pointer h-100 course-card">
+        <div class="card border-success pointer course-card h-100">
           <div class="card-body">
             <!-- Course Code and Title -->
             <h5 class="card-title">{{ item.course.code }}</h5>
@@ -42,46 +42,46 @@
         </div>
       </a>
 
-     <!-- Action Buttons (Outside Link) -->
-<div class="mt-2">
+      <!-- Action Buttons (Outside Link) -->
+      <div class="mb-4 mt-2">
+        <!-- View Assignments button visible -->
+        <a
+          href="{{ url_for('main.assignments_list', course_id=item.course.id) }}"
+          class="btn btn-sm btn-secondary w-100 mb-2"
+        >
+          View Assignments
+        </a>
 
-  <!-- View Assignments button ALWAYS visible -->
-  <a href="{{ url_for('main.assignments_list', course_id=item.course.id) }}"
-     class="btn btn-sm btn-secondary w-100 mb-2">
-    View Assignments
-  </a>
-
-  {% if current_user.is_authenticated %}
-
-    {% if item.is_enrolled %}
-    <form method="POST"
+        {% if current_user.is_authenticated %} {% if item.is_enrolled %}
+        <form
+          method="POST"
           action="{{ url_for('main.drop_course', course_id=item.course.id) }}"
-          style="display: inline">
-      <button type="submit" class="btn btn-sm btn-outline-danger w-100">
-        Drop Course
-      </button>
-    </form>
+          style="display: inline"
+        >
+          <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+            Drop Course
+          </button>
+        </form>
 
-    {% elif item.course.availability %}
-    <form method="POST"
+        {% elif item.course.availability %}
+        <form
+          method="POST"
           action="{{ url_for('main.enroll_course', course_id=item.course.id) }}"
-          style="display: inline">
-      <button type="submit" class="btn btn-sm btn-primary w-100">
-        Enroll
-      </button>
-    </form>
-    {% endif %}
-
-  {% else %}
-    <a href="{{ url_for('auth.login') }}"
-       class="btn btn-sm btn-outline-primary w-100">
-      Login to Enroll
-    </a>
-  {% endif %}
-
-</div>
-
-
+          style="display: inline"
+        >
+          <button type="submit" class="btn btn-sm btn-primary w-100">
+            Enroll
+          </button>
+        </form>
+        {% endif %} {% else %}
+        <a
+          href="{{ url_for('auth.login') }}"
+          class="btn btn-sm btn-outline-primary w-100"
+        >
+          Login to Enroll
+        </a>
+        {% endif %}
+      </div>
     </div>
     {% endfor %}
   </div>

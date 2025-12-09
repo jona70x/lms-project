@@ -62,8 +62,15 @@
     {% endif %}
   </div>
 
-  <!-- Submit -->
-  {{ form.submit }}
+  <!-- Submit and Cancel Buttons -->
+  <div class="d-flex gap-2">
+    {{ form.submit }}
+    <a
+      href="{{ url_for('assignments.index') }}"
+      class="btn btn-danger border-danger-subtle"
+      >Cancel</a
+    >
+  </div>
 </form>
 
 {% endblock %}

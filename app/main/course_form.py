@@ -14,6 +14,7 @@ class CourseForm(FlaskForm):
     max_students = IntegerField('Maximux Students', [DataRequired()])
     submit = SubmitField('Create course', render_kw={"class": "btn btn-primary border-primary-subtle"})
     update = SubmitField('Update course', render_kw={"class": "btn btn-primary border-primary-subtle"})
+    cancel = SubmitField('Cancel', render_kw={"class": "btn btn-danger border-danger-subtle"})
 
     def set_data(self):
         pass
