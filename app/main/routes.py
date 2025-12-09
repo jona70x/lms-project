@@ -1,6 +1,6 @@
 from flask import render_template, Blueprint, request, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
-from app.models import Course, User
+from app.models import Course, User, Assignment
 from app.config import db
 from app.main.course_form import CourseForm
 from app.forms import EnrollCourseForm, DropCourseForm
@@ -39,7 +39,7 @@ def dashboard():
 @main_bp.route('/courses')
 def courses_list():
     all_courses = Course.query.all()
-
+    
     # checking if current user is enroller
     courses_with_status = []
     for course in all_courses:
@@ -227,6 +227,8 @@ def gpa_calculator():
 @main_bp.route('/courses/<int:course_id>/assignments')
 @login_required
 def assignments_list(course_id):
+    # real assignment details
+    
     fake_assignments = [
         {
             "id": 1,

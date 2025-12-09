@@ -9,6 +9,7 @@ assignments_bp = Blueprint("assignments", __name__, template_folder='templates')
 
 #displays all the assignments by course
 @assignments_bp.route('/')
+@login_required
 def index():
     all_courses = Course.query.all()
 
