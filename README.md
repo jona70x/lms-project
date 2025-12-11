@@ -45,6 +45,29 @@ IntelliGrades is a Flask-based web application designed to improve educational w
    pip install -r requirements.txt
    ```
 
+4. **Optional: It is a good practice to delete the db and populate it again so testing can be done succesfully.
+
+```bash
+   # Remove old database and recreate
+   rm -f app/app.db
+   ```
+    
+```bash
+   # Run populate_db to create tables and test user
+python -m app.scripts.populate_db
+   ```
+
+```bash
+   # Run populate_courses to add course data
+   python -m app.scripts.populate_courses
+   ```
+
+```bash
+   # Start the app
+   python run.py
+   ```
+
+
 ### Running the Application
 
 1. **Activate the virtual environment**:
@@ -60,9 +83,37 @@ IntelliGrades is a Flask-based web application designed to improve educational w
 ## Features
 
 ### Current Features
-- User authentication pages
-- Responsive navbar with Bootstrap
-- Form validation with WTForms
+- User authentication with proper database schema and form validation with WTForms.
+- Users can login and logout from their accounts.
+- Create, read, delete, and updte operations for courses and assingments.
+- Users can enroll and drop courses.
+- Rerouting and error validation for most of the routes.
+- Protected routes implemented. 
+
+## Screenshots
+Home Page
+<img width="1167" height="889" alt="image" src="https://github.com/user-attachments/assets/f7fd549a-d939-4f47-828c-a24556035e81" />
+
+Registration
+<img width="1190" height="584" alt="image" src="https://github.com/user-attachments/assets/881cc226-a782-4781-a90e-40ab5daaf560" />
+
+After successfull registration redirects to sign in page
+<img width="1185" height="645" alt="image" src="https://github.com/user-attachments/assets/bacf973a-a708-4425-9ef1-56ab1d0e2fb5" />
+
+Home Page with protected links displaying the user email 
+<img width="1416" height="802" alt="image" src="https://github.com/user-attachments/assets/d315df77-64e7-48df-9e5f-e7dec350c272" />
+
+Creating a new Course
+<img width="1426" height="928" alt="image" src="https://github.com/user-attachments/assets/12e38009-5cc5-4248-8532-6f263bc8289a" />
+
+All courses page with new course displaying
+<img width="1509" height="995" alt="image" src="https://github.com/user-attachments/assets/5594b2e3-0a2f-448c-a62e-2d8fee6dc7b4" />
+
+Newly created course details
+<img width="1512" height="636" alt="image" src="https://github.com/user-attachments/assets/7a1cf5c8-c272-4b01-9dbe-3762051e6e75" />
+
+All courses and assignments
+<img width="1286" height="986" alt="image" src="https://github.com/user-attachments/assets/0ef88d05-838e-41b5-bc61-5ec88fe53cd1" />
 
 ## Meet the Team
 

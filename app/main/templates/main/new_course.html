@@ -62,9 +62,8 @@
 
     <!-- Availability field -->
     <div class="mb-3">
-      {{form.availability()}}
-      {{ form.availability.label(class="form-label") }} {% if
-      form.availability.errors %}
+      {{form.availability()}} {{ form.availability.label(class="form-label") }}
+      {% if form.availability.errors %}
       <div class="text-danger">
         {% for error in form.availability.errors %}
         <small>{{ error }}</small>
@@ -98,9 +97,15 @@
       {% endif %}
     </div>
 
-    <!-- Submit button -->
-    {{ form.submit(class="btn btn-primary") }}
+    <!-- Submit and Cancel buttons -->
+    <div class="d-flex gap-2">
+      {{ form.submit(class="btn btn-primary") }}
+      <a
+        href="{{ url_for('main.courses_list') }}"
+        class="btn btn-danger border-danger-subtle"
+        >Cancel</a
+      >
+    </div>
   </form>
 </div>
 {% endblock %}
-

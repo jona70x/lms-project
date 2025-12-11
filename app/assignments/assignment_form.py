@@ -10,7 +10,8 @@ class AssignmentForm(FlaskForm):
     due_date = DateField('Due date', format='%Y-%m-%d', validators=[Optional()])
     max_points = IntegerField('Max grade points', validators=[DataRequired()], default=100)
     submit = SubmitField('Create Assignment', render_kw={"class": "btn btn-primary border-primary-subtle"})
-    update = SubmitField('Update Assignment', render_kw={"class": "btn btn-primary border-primary-subtle"})
+    update = SubmitField('Update Assignment', render_kw={"class": "btn btn-secondary border-secondary-subtle"})
+    cancel = SubmitField('Cancel', render_kw={"class": "btn btn-danger border-danger-subtle"})
 
     # adds courses to dropdown
     def __init__(self,*args, **kwargs):
