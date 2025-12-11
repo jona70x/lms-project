@@ -1,5 +1,6 @@
 from flask import render_template, Blueprint, request, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
+from app.decorators import roles_required
 from app.models import Course, User, Assignment
 from app.config import db
 from app.main.course_form import CourseForm
@@ -129,12 +130,14 @@ def course_detail(course_id):
 
 # New courses route
 @main_bp.route("/courses/new", methods=['GET','POST'])
+@roles_required(User.ROLE_PROFESSOR, User.ROLE_ADMIN)
 @login_required
 def create_course():
     course_form = CourseForm()
 
     if course_form.validate_on_submit():
-       course_data= {'code' : course_form.code.data,
+       course_data= {
+        'code' : course_form.code.data,
         'title' : course_form.title.data,
         'description': course_form.description.data, 
         'credits' : course_form.credits.data,
@@ -143,11 +146,11 @@ def create_course():
         'format': course_form.format.data,
         'max_students' : course_form.max_students.data
        }
-
+       course_data.professor = current_user
+       
        new_course = Course(**course_data)
        
        db.session.add(new_course)
-
        db.session.commit()
 
        flash('Course added! Check it in dashboard')
@@ -159,9 +162,13 @@ def create_course():
 
 # Delete course
 @main_bp.route('/courses/<int:course_id>/delete', methods=['POST'])
+@roles_required(User.ROLE_PROFESSOR, User.ROLE_ADMIN)
 @login_required
 def delete_course(course_id):
     course = Course.query.filter_by(id =course_id).first()
+    
+    if not (current_user.is_admin or course.professor == current_user):
+        abort(403)
     
     # delete course
     db.session.delete(course)
@@ -172,11 +179,15 @@ def delete_course(course_id):
 
 # Update course
 @main_bp.route('/courses/<int:course_id>/update', methods=['GET', 'POST'])
+@roles_required(User.ROLE_PROFESSOR, User.ROLE_ADMIN)
 @login_required
 def update_course(course_id):
 
     course_info = Course.query.filter_by(id=course_id).first()
     course_form = CourseForm()
+
+    if not (current_user.is_admin or course.professor == current_user):
+        abort(403)
 
     # Pre-populate form on GET request
     if request.method == 'GET' and course_info: 

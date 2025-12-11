@@ -17,6 +17,20 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField('Confirm Password', validators=[DataRequired(),EqualTo('password')])
     submit = SubmitField('Register')
 
+    # Role selection
+    role = SelectField(
+        'Register as a',
+        choices=[
+            (User.ROLE_STUDENT, 'Student'),
+            (User.ROLE_PROFESSOR, 'Professor'),
+            (User.ROLE_ADMIN, 'Admin'),
+        ],
+        default=User.ROLE_STUDENT,
+        validators=[DataRequired()],
+    )
+    
+    submit = SubmitField('Register')
+    
     # custom validators
     def validate_email(self, email):
         # check if email already exists

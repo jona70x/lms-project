@@ -18,7 +18,7 @@ def register():
 
     if form.validate_on_submit():
         # new user
-        user = User(email=form.email.data)
+        user = User(email=form.email.data, role=form.role.data)
         user.set_password(form.password.data)
 
         # saving to db
