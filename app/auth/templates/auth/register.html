@@ -46,6 +46,14 @@
             {% endif %}
         </div>
         
+        <div class="mb-3">
+            {{ form.role.label(class="form-label") }}
+            {{ form.role(class="form-select") }}
+            {% for error in form.role.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
         <!-- Submit button -->
         {{ form.submit(class="btn btn-primary") }}
     </form>
