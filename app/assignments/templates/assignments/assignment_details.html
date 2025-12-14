@@ -46,7 +46,7 @@
             <!-- Delete Button -->
             <!-- <form
               method="POST"
-              action="{{ url_for('main.delete_course', course_id=course.id) }}"
+              action="{{ url_for('courses.delete_course', course_id=course.id) }}"
               style="display: inline"
             >
               <button
@@ -59,10 +59,10 @@
             </form> -->
             <!-- Back Button -->
             <a
-              href="{{ url_for('assignments.index') }}"
+              href="{{ url_for('courses.course_dashboard', course_id=course.id, tab='assignments') }}"
               class="btn btn-outline-secondary"
             >
-              Back to Assignments
+              Back to Dashboard
             </a>
           </div>
         </div>

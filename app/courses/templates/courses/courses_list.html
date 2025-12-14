@@ -7,7 +7,7 @@
     {% for item in courses %}
     <div class="col-md-6 col-lg-4 d-flex flex-column">
       <a
-        href="{{ url_for('main.course_detail', course_id=item.course.id) }}"
+        href="{% if item.is_enrolled %}{{ url_for('courses.course_dashboard', course_id=item.course.id) }}{% else %}{{ url_for('courses.course_detail', course_id=item.course.id) }}{% endif %}"
         class="text-decoration-none flex-grow-1"
       >
         <div class="card border-success pointer course-card h-100">
@@ -38,35 +38,39 @@
             {% else %}
             <span class="badge bg-danger">Closed</span>
             {% endif %}
+
+            <!-- Enrolled Badge -->
+            {% if item.is_enrolled %}
+            <span class="badge bg-primary">Enrolled</span>
+            {% endif %}
           </div>
         </div>
       </a>
 
       <!-- Action Buttons (Outside Link) -->
       <div class="mb-4 mt-2">
-        <!-- View Assignments button visible -->
+        {% if item.is_enrolled %}
+        <!-- View Dashboard button for enrolled students -->
         <a
-          href="{{ url_for('main.assignments_list', course_id=item.course.id) }}"
+          href="{{ url_for('courses.course_dashboard', course_id=item.course.id) }}"
           class="btn btn-sm btn-secondary w-100 mb-2"
         >
-          View Assignments
+          View Dashboard
         </a>
-
-        {% if current_user.is_authenticated %} {% if item.is_enrolled %}
         <form
           method="POST"
-          action="{{ url_for('main.drop_course', course_id=item.course.id) }}"
+          action="{{ url_for('courses.drop_course', course_id=item.course.id) }}"
           style="display: inline"
         >
           <button type="submit" class="btn btn-sm btn-outline-danger w-100">
             Drop Course
           </button>
         </form>
-
-        {% elif item.course.availability %}
+        {% elif current_user.is_authenticated %} {% if item.course.availability
+        %}
         <form
           method="POST"
-          action="{{ url_for('main.enroll_course', course_id=item.course.id) }}"
+          action="{{ url_for('courses.enroll_course', course_id=item.course.id) }}"
           style="display: inline"
         >
           <button type="submit" class="btn btn-sm btn-primary w-100">

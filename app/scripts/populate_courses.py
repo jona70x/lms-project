@@ -1,6 +1,6 @@
 from app import create_app
 from app.config import db
-from app.models import Course
+from app.models import Course, Assignment, StudentAssignment
 
 # adding courses to the db so we can test our functionality
 def populate_courses():

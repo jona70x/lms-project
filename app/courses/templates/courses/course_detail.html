@@ -49,7 +49,7 @@
             <!-- Drop Course Button -->
             <form
               method="POST"
-              action="{{ url_for('main.drop_course', course_id=course.id) }}"
+              action="{{ url_for('courses.drop_course', course_id=course.id) }}"
               style="display: inline"
             >
               <button
@@ -65,14 +65,17 @@
             <!-- Enroll Button -->
             <form
               method="POST"
-              action="{{ url_for('main.enroll_course', course_id=course.id) }}"
+              action="{{ url_for('courses.enroll_course', course_id=course.id) }}"
               style="display: inline"
             >
               <button type="submit" class="btn btn-primary">Enroll Now</button>
             </form>
 
             <!-- Update -->
-            <a href="/courses/{{course.id}}/update" class="btn btn-secondary">
+            <a
+              href="{{ url_for('courses.update_course', course_id=course.id) }}"
+              class="btn btn-secondary"
+            >
               Update Course</a
             >
 
@@ -90,7 +93,7 @@
             <!-- Delete Button -->
             <form
               method="POST"
-              action="{{ url_for('main.delete_course', course_id=course.id) }}"
+              action="{{ url_for('courses.delete_course', course_id=course.id) }}"
               style="display: inline"
             >
               <button
@@ -103,7 +106,7 @@
             </form>
             <!-- Back Button -->
             <a
-              href="{{ url_for('main.courses_list') }}"
+              href="{{ url_for('courses.courses_list') }}"
               class="btn btn-outline-secondary"
             >
               Back to Courses

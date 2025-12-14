@@ -182,6 +182,72 @@ class Assignment(db.Model):
 
     # relationship back to Course
     course = db.relationship('Course', back_populates='assignments')
+    
+    # relationship to student progress
+    student_assignments = db.relationship(
+        'StudentAssignment',
+        back_populates='assignment',
+        lazy='dynamic',
+        cascade='all,delete-orphan'
+    )
+
+  # Get the status of this assignment for a specific student
+    def get_student_status(self, user_id):
+        student_assignment = StudentAssignment.query.filter_by(
+            assignment_id=self.id,
+            user_id=user_id
+        ).first()
+        if student_assignment:
+            return student_assignment.status
+        return 'Not Started'
 
     def __repr__(self):
         return f'<Assignment {self.title} for Course {self.course_id}>'
+
+
+# Model to track individual student progress on assignments
+class StudentAssignment(db.Model):
+    __tablename__ = "student_assignments"
+
+    STATUS_NOT_STARTED = "Not Started"
+    STATUS_IN_PROGRESS = "In Progress"
+    STATUS_COMPLETED = "Completed"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    assignment_id = db.Column(db.Integer, db.ForeignKey('assignments.id'), nullable=False)
+    
+    status = db.Column(db.String(32), default=STATUS_NOT_STARTED, nullable=False)
+    score = db.Column(db.Integer, nullable=True)  # Grade received (if graded)
+    completed_at = db.Column(db.DateTime, nullable=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # relationships
+    user = db.relationship('User', backref='student_assignments')
+    assignment = db.relationship('Assignment', back_populates='student_assignments')
+
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'assignment_id', name='unique_user_assignment'),
+    )
+
+    # status functions
+    def mark_completed(self, score=None):
+        self.status = self.STATUS_COMPLETED
+        self.completed_at = datetime.utcnow()
+        if score is not None:
+            self.score = score
+        elif self.assignment:
+            self.score = self.assignment.max_points
+
+    def mark_in_progress(self):
+        self.status = self.STATUS_IN_PROGRESS
+        self.completed_at = None
+       
+
+    def mark_not_started(self):
+        self.status = self.STATUS_NOT_STARTED
+        self.completed_at = None
+        self.score = None  
+
+    def __repr__(self):
+        return f'<StudentAssignment: User {self.user_id} -> Assignment {self.assignment_id} ({self.status})>'

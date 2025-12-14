@@ -1,6 +1,6 @@
 from app import create_app
 from app.config import db
-from app.models import User
+from app.models import User, Course, Assignment, Enrollment, StudentAssignment
 
 # create_app is already a Flask instance, not a function
 with create_app.app_context():
