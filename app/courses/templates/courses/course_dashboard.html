@@ -1,0 +1,426 @@
+{% extends "base.html" %} {% block body %}
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Sidebar Navigation -->
+    <div class="col-md-3 col-lg-2">
+      <div class="card">
+        <div class="card-header bg-light">
+          <h6 class="mb-0">Navigation</h6>
+        </div>
+        <div class="list-group list-group-flush">
+          <a
+            href="{{ url_for('courses.course_dashboard', course_id=course.id, tab='assignments') }}"
+            class="list-group-item list-group-item-action {% if active_tab == 'assignments' %}active{% endif %}"
+          >
+            Assignments
+          </a>
+          <a
+            href="{{ url_for('courses.course_dashboard', course_id=course.id, tab='grades') }}"
+            class="list-group-item list-group-item-action {% if active_tab == 'grades' %}active{% endif %}"
+          >
+            Grades
+          </a>
+          <a
+            href="{{ url_for('courses.course_dashboard', course_id=course.id, tab='people') }}"
+            class="list-group-item list-group-item-action {% if active_tab == 'people' %}active{% endif %}"
+          >
+            People
+          </a>
+          <a
+            href="{{ url_for('main.gpa_calculator') }}"
+            class="list-group-item list-group-item-action"
+          >
+            GPA Calculator
+          </a>
+          <a
+            href="{{ url_for('courses.course_dashboard', course_id=course.id, tab='announcements') }}"
+            class="list-group-item list-group-item-action {% if active_tab == 'announcements' %}active{% endif %}"
+          >
+            Announcements
+          </a>
+        </div>
+      </div>
+
+      <!-- Course Info Card -->
+      <div class="card mt-3">
+        <div class="card-header bg-light">
+          <h6 class="mb-0">Course Info</h6>
+        </div>
+        <div class="card-body">
+          <p class="mb-1"><strong>Code:</strong> {{ course.code }}</p>
+          <p class="mb-1"><strong>Units:</strong> {{ course.credits }}</p>
+          <p class="mb-1">
+            <strong>Format:</strong>
+            <span class="badge bg-info">{{ course.format }}</span>
+          </p>
+          <p class="mb-1"><strong>Professor:</strong> {{ course.professor }}</p>
+          <p class="mb-0">
+            <strong>Students:</strong> {{ enrolled_count }}{% if
+            course.max_students %}/{{ course.max_students }}{% endif %}
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card mt-3">
+        <div class="card-header bg-light">
+          <h6 class="mb-0">Actions</h6>
+        </div>
+        <div class="card-body">
+          {% if current_user.is_authenticated %} {% if is_enrolled %}
+          <form
+            method="POST"
+            action="{{ url_for('courses.drop_course', course_id=course.id) }}"
+          >
+            <button
+              type="submit"
+              class="btn btn-outline-danger btn-sm w-100"
+              onclick="return confirm('Are you sure you want to drop this course?')"
+            >
+              Drop Course
+            </button>
+          </form>
+          {% elif course.availability %}
+          <form
+            method="POST"
+            action="{{ url_for('courses.enroll_course', course_id=course.id) }}"
+          >
+            <button type="submit" class="btn btn-primary btn-sm w-100">
+              Enroll Now
+            </button>
+          </form>
+          {% endif %} {% endif %}
+          <a
+            href="{{ url_for('courses.courses_list') }}"
+            class="btn btn-outline-secondary btn-sm w-100 mt-2"
+          >
+            Back to Courses
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="col-md-9 col-lg-10">
+      <h2 class="mb-4">{{ course.title }}</h2>
+
+      <!-- Tab Content -->
+      {% if active_tab == 'assignments' %}
+      <!-- ASSIGNMENTS TAB -->
+      <div class="card">
+        <div
+          class="card-header bg-light d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0">Assignments</h5>
+          {% if is_course_owner or current_user.is_admin %}
+          <a
+            href="{{ url_for('assignments.create_assignment', course_id=course.id) }}"
+            class="btn btn-primary btn-sm"
+          >
+            <i class="bi bi-plus-circle"></i> Create Assignment
+          </a>
+          {% endif %}
+        </div>
+        <div class="card-body p-0">
+          {% if assignments %}
+          <div class="list-group list-group-flush">
+            {% for assignment in assignments %}
+            <div
+              class="list-group-item d-flex justify-content-between align-items-start"
+            >
+              <div class="ms-2 me-auto">
+                <a
+                  href="{{ url_for('assignments.assignment_detail', assignment_id=assignment.id) }}"
+                  class="text-decoration-none"
+                >
+                  <div class="fw-bold">{{ assignment.title }}</div>
+                </a>
+                <small class="text-muted"
+                  >{{ assignment.description[:100] }}{% if
+                  assignment.description|length > 100 %}...{% endif %}</small
+                >
+                <div class="mt-1">
+                  {% if assignment.status == 'Completed' %}
+                  <span class="badge bg-success">Completed</span>
+                  <span class="badge bg-success"
+                    >{{ assignment.score }}/{{ assignment.max_points }}
+                    pts</span
+                  >
+                  {% elif assignment.status == 'In Progress' %}
+                  <span class="badge bg-warning text-dark">In Progress</span>
+                  <span class="badge bg-info"
+                    >{{ assignment.max_points }} pts</span
+                  >
+                  {% else %}
+                  <span class="badge bg-secondary">Not Started</span>
+                  <span class="badge bg-info"
+                    >{{ assignment.max_points }} pts</span
+                  >
+                  {% endif %}
+                </div>
+              </div>
+              <div class="text-end">
+                <span class="text-muted d-block"
+                  >Due: {{ assignment.due_date.strftime('%b %d, %Y') if
+                  assignment.due_date else 'No due date' }}</span
+                >
+
+                <!-- Student: Toggle Status Button -->
+                {% if is_enrolled %}
+                <div class="mt-2">
+                  <form
+                    method="POST"
+                    action="{{ url_for('courses.toggle_assignment_status', course_id=course.id, assignment_id=assignment.id) }}"
+                    style="display: inline"
+                  >
+                    {% if assignment.status == 'Not Started' %}
+                    <button
+                      type="submit"
+                      class="btn btn-outline-primary btn-sm"
+                      title="Mark as In Progress"
+                    >
+                      Start
+                    </button>
+                    {% elif assignment.status == 'In Progress' %}
+                    <button
+                      type="submit"
+                      class="btn btn-outline-success btn-sm"
+                      title="Mark as Completed"
+                    >
+                      Complete
+                    </button>
+                    {% else %}
+                    <button
+                      type="submit"
+                      class="btn btn-outline-secondary btn-sm"
+                      title="Reset to Not Started"
+                    >
+                      Reset
+                    </button>
+                    {% endif %}
+                  </form>
+                </div>
+                {% endif %}
+
+                <!-- Professor/Admin: Edit & Delete Buttons -->
+                {% if is_course_owner or current_user.is_admin %}
+                <div class="mt-2">
+                  <a
+                    href="{{ url_for('assignments.edit_assignment', assignment_id=assignment.id) }}"
+                    class="btn btn-outline-secondary btn-sm me-1"
+                    >Edit</a
+                  >
+                  <form
+                    method="POST"
+                    action="{{ url_for('assignments.delete_assignment', assignment_id=assignment.id) }}"
+                    style="display: inline"
+                  >
+                    <button
+                      type="submit"
+                      class="btn btn-outline-danger btn-sm"
+                      onclick="return confirm('Delete this assignment?');"
+                    >
+                      Delete
+                    </button>
+                  </form>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="p-4 text-center text-muted">
+            <p>No assignments for this course yet.</p>
+            {% if is_course_owner or current_user.is_admin %}
+            <a
+              href="{{ url_for('assignments.create_assignment', course_id=course.id) }}"
+              class="btn btn-primary"
+            >
+              Create Your First Assignment
+            </a>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% elif active_tab == 'grades' %}
+      <!-- GRADES TAB -->
+      <div class="card">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Your Grades</h5>
+        </div>
+        <div class="card-body">
+          {% if is_enrolled %}
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Assignment</th>
+                <th>Due Date</th>
+                <th>Max Points</th>
+                <th>Your Score</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if assignments %} {% for assignment in assignments %}
+              <tr>
+                <td>{{ assignment.title }}</td>
+                <td>
+                  {{ assignment.due_date.strftime('%Y-%m-%d') if
+                  assignment.due_date else 'N/A' }}
+                </td>
+                <td>{{ assignment.max_points }}</td>
+                <td>
+                  {% if assignment.score is not none %}
+                  <span class="text-success fw-bold"
+                    >{{ assignment.score }}/{{ assignment.max_points }}</span
+                  >
+                  {% else %}
+                  <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if assignment.status == 'Completed' %}
+                  <span class="badge bg-success">Completed</span>
+                  {% elif assignment.status == 'In Progress' %}
+                  <span class="badge bg-warning text-dark">In Progress</span>
+                  {% else %}
+                  <span class="badge bg-secondary">Not Started</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %} {% else %}
+              <tr>
+                <td colspan="5" class="text-center text-muted">
+                  No assignments graded yet.
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+
+          <!-- Grade Summary -->
+          <div class="card mt-3 bg-light">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4 text-center">
+                  <h6 class="text-muted">Total Points</h6>
+                  <h4>{{ total_points_earned }}/{{ total_points_possible }}</h4>
+                </div>
+                <div class="col-md-4 text-center">
+                  <h6 class="text-muted">Current Grade</h6>
+                  <h4>{{ current_grade }}%</h4>
+                </div>
+                <div class="col-md-4 text-center">
+                  <h6 class="text-muted">Letter Grade</h6>
+                  <h4>{{ letter_grade }}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="alert alert-info">
+            <p class="mb-0">
+              You must be enrolled in this course to view your grades.
+            </p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% elif active_tab == 'people' %}
+      <!-- PEOPLE TAB -->
+      <div class="card">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">People Enrolled</h5>
+        </div>
+        <div class="card-body">
+          <!-- Instructor Section -->
+          <h6 class="border-bottom pb-2 mb-3">Instructor</h6>
+          <div class="d-flex align-items-center mb-4">
+            <div
+              class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+              style="width: 50px; height: 50px"
+            >
+              <i class="bi bi-person-fill"></i>
+              {{ course.professor[0] if course.professor else 'P' }}
+            </div>
+            <div>
+              <strong>{{ course.professor or 'TBA' }}</strong>
+              <br />
+              <small class="text-muted">Professor</small>
+            </div>
+          </div>
+
+          <!-- Students Section -->
+          <h6 class="border-bottom pb-2 mb-3">
+            Students ({{ enrolled_count }})
+          </h6>
+          {% if enrolled_students %}
+          <div class="row">
+            {% for student in enrolled_students %}
+            <div class="col-md-6 mb-3">
+              <div class="d-flex align-items-center">
+                <div
+                  class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3"
+                  style="width: 40px; height: 40px"
+                >
+                  {{ student.email[0]|upper }}
+                </div>
+                <div>
+                  <strong>{{ student.email }}</strong>
+                  <br />
+                  <small class="text-muted"
+                    >{{ student.role|capitalize }}</small
+                  >
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p class="text-muted">No students enrolled yet.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      {% elif active_tab == 'announcements' %}
+      <!-- ANNOUNCEMENTS TAB -->
+      <div class="card">
+        <div
+          class="card-header bg-light d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0">Announcements</h5>
+          {% if current_user.is_professor or current_user.is_admin %}
+          <button
+            class="btn btn-sm btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#newAnnouncementModal"
+          >
+            New Announcement
+          </button>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          {% if announcements %} {% for announcement in announcements %}
+          <div class="border-bottom pb-3 mb-3">
+            <h6>{{ announcement.title }}</h6>
+            <p class="text-muted small mb-2">
+              Posted on {{ announcement.date }}
+            </p>
+            <p>{{ announcement.content }}</p>
+          </div>
+          {% endfor %} {% else %}
+          <div class="text-center text-muted py-4">
+            <p class="mb-0">No announcements for this course yet.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

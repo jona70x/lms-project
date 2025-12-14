@@ -3,9 +3,10 @@ from app.config import Config, db
 from app.auth.routes import authentication_bp
 from app.main.routes import main_bp
 from app.assignments.routes import assignments_bp
+from app.courses import courses_bp
 """For login functionality"""
 from flask_login import LoginManager
-from app.models import User, Course, Enrollment
+from app.models import User, Course, Enrollment, Assignment, StudentAssignment
 
 login_manager = LoginManager()
 
@@ -27,3 +28,4 @@ def load_user(user_id):
 create_app.register_blueprint(authentication_bp, url_prefix = '/auth')
 create_app.register_blueprint(main_bp, url_prefix = '/')
 create_app.register_blueprint(assignments_bp, url_prefix = '/assignments')
+create_app.register_blueprint(courses_bp, url_prefix = '/courses')

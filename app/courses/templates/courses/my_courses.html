@@ -18,8 +18,18 @@
     <tbody>
       {% for course in courses %}
       <tr>
-        <td>{{ course.code }}</td>
-        <td>{{ course.title }}</td>
+        <td>
+          <a
+            href="{{ url_for('courses.course_dashboard', course_id=course.id) }}"
+            >{{ course.code }}</a
+          >
+        </td>
+        <td>
+          <a
+            href="{{ url_for('courses.course_dashboard', course_id=course.id) }}"
+            >{{ course.title }}</a
+          >
+        </td>
         <td>{{ course.credits }}</td>
         <td>{{ course.professor }}</td>
         <td><span class="badge bg-info">{{ course.format }}</span></td>
@@ -32,7 +42,7 @@
         <td>
           <form
             method="POST"
-            action="{{ url_for('main.drop_course', course_id=course.id) }}"
+            action="{{ url_for('courses.drop_course', course_id=course.id) }}"
             style="display: inline"
           >
             <button
@@ -55,7 +65,7 @@
   {% else %}
   <p class="alert alert-warning mt-3">
     You are not enrolled in any courses.
-    <a href="{{ url_for('main.courses_list') }}">Browse available courses</a>
+    <a href="{{ url_for('courses.courses_list') }}">Browse available courses</a>
   </p>
   {% endif %}
 </div>

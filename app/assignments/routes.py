@@ -28,9 +28,14 @@ def index():
 
 #create new assignment route
 @assignments_bp.route('/new', methods=['GET', 'POST'])
+@assignments_bp.route('/new/<int:course_id>', methods=['GET', 'POST'])
 @login_required
-def create_assignment():
+def create_assignment(course_id=None):
     form = AssignmentForm()
+    
+    # Pre-select course if course_id is provided
+    if course_id and request.method == 'GET':
+        form.course_id.data = course_id
 
     if form.validate_on_submit():
         # extracting form data
@@ -48,10 +53,14 @@ def create_assignment():
         db.session.commit()
 
         flash('Assignment created!', 'success')
+        
+        # Redirect back to course dashboard if course_id was provided
+        if course_id:
+            return redirect(url_for('courses.course_dashboard', course_id=course_id, tab='assignments'))
 
         return redirect(url_for('assignments.index'))
     
-    return render_template('assignments/new_assignment.html', form=form)
+    return render_template('assignments/new_assignment.html', form=form, course_id=course_id)
 
 
 # Assignment detail page
