@@ -251,3 +251,10 @@ class StudentAssignment(db.Model):
 
     def __repr__(self):
         return f'<StudentAssignment: User {self.user_id} -> Assignment {self.assignment_id} ({self.status})>'
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    message = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_read = db.Column(db.Boolean, default=False)
