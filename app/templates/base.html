@@ -144,7 +144,7 @@
             <!-- LOGIN -->
             <li class="nav-item">
               <a
-                class="nav-link {% if request.path.startswith('/login') %}active fw-bold{% endif %}"
+                class="nav-link {% if request.path.startswith('/auth/login') %}active fw-bold{% endif %}"
                 href="{{ url_for('auth.login') }}"
               >
                 Login
@@ -154,7 +154,7 @@
             <!-- REGISTER -->
             <li class="nav-item">
               <a
-                class="nav-link {% if request.path.startswith('/register') %}active fw-bold{% endif %}"
+                class="nav-link {% if request.path.startswith('/auth/register') %}active fw-bold{% endif %}"
                 href="{{ url_for('auth.register') }}"
               >
                 Register
