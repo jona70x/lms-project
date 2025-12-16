@@ -35,7 +35,27 @@ def dashboard():
 @main_bp.route("/messages")
 @login_required
 def messages():
-    return render_template("main/messages.html")
+    threads = [
+        {"id": 1, "from": "Instructor", "subject": "Welcome to the course", "preview": "Let’s have a great semester..."},
+        {"id": 2, "from": "TA", "subject": "Assignment reminder", "preview": "Don’t forget Homework 1..."},
+    ]
+    return render_template("main/messages.html", threads=threads)
+
+
+@main_bp.route("/messages/<int:msg_id>")
+@login_required
+def message_detail(msg_id):
+    threads = [
+        {"id": 1, "from": "Instructor", "subject": "Welcome to the course", "preview": "Let’s have a great semester...", "body": "Welcome! Please read the syllabus and check the schedule."},
+        {"id": 2, "from": "TA", "subject": "Assignment reminder", "preview": "Don’t forget Homework 1...", "body": "Homework 1 is due this Friday at 11:59PM."},
+    ]
+
+    msg = next((t for t in threads if t["id"] == msg_id), None)
+    if not msg:
+        flash("Message not found.", "danger")
+        return redirect(url_for("main.messages"))
+
+    return render_template("main/message_detail.html", msg=msg)
 
 
 # GPA calculator

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container mt-4">
+  <a href="{{ url_for('main.messages') }}" class="btn btn-sm btn-outline-secondary mb-3">← Back</a>
+
+  <h1 class="mb-1">{{ msg.subject }}</h1>
+  <p class="text-muted">From: {{ msg.from }}</p>
+  <hr>
+  <p>{{ msg.body }}</p>
+</div>
+{% endblock %}
+
