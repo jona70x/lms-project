@@ -8,14 +8,14 @@ class LoginForm(FlaskForm):
     # username = StringField("Username", validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember me')
-    submit = SubmitField('Login', render_kw={"class": "btn btn-primary border-primary-subtle", })
+    submit = SubmitField('Sign In', render_kw={"class": "btn btn-primary border-primary-subtle", })
 
 """Registration Form Class"""
 class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     password2 = PasswordField('Confirm Password', validators=[DataRequired(),EqualTo('password')])
-    submit = SubmitField('Register')
+    submit = SubmitField('Sign Up')
 
     # Role selection
     role = SelectField(
@@ -28,9 +28,7 @@ class RegistrationForm(FlaskForm):
         default=User.ROLE_STUDENT,
         validators=[DataRequired()],
     )
-    
-    submit = SubmitField('Register')
-    
+        
     # custom validators
     def validate_email(self, email):
         # check if email already exists
