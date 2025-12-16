@@ -46,18 +46,25 @@
             </li>
 
             <li class="nav-item">
-               <a class="nav-link" href="{{ url_for('main.messages') }}">Messages</a>
+              <a class="nav-link" href="{{ url_for('main.messages') }}"
+                >Messages</a
+              >
             </li>
 
             <li class="nav-item">
-               <a class="nav-link position-relative" href="{{ url_for('main.dashboard') }}">
-                   Notifications
-                  {% if notifications and notifications|length > 0 %}
-                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              <a
+                class="nav-link position-relative"
+                href="{{ url_for('main.dashboard') }}"
+              >
+                Notifications {% if notifications and notifications|length > 0
+                %}
+                <span
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                >
                   {{ notifications|length }}
-                   </span>
-                   {% endif %}
-               </a>
+                </span>
+                {% endif %}
+              </a>
             </li>
 
             <!-- STUDENT-only links -->
@@ -110,13 +117,12 @@
                 >Register</a
               >
             </li>
+
             {% else %}
-            <li class="nav-item">
+            <li class="nav-item ms-auto d-flex align-items-center">
               <span class="navbar-text me-3">
                 Hello, {{ current_user.email }}!
               </span>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
             </li>
             {% endif %}
