@@ -43,15 +43,15 @@
               {% endif %}
             </td>
             <td>
-              {% if submission.completed_at %} {{
-              submission.completed_at.strftime('%b %d, %Y at %I:%M %p') }} {%
-              else %} - {% endif %}
+              {% if submission.completed_at %}
+              {{ submission.completed_at.strftime('%b %d, %Y at %I:%M %p') }}
+              {% else %}
+              -
+              {% endif %}
             </td>
             <td>
               {% if submission.score is not none %}
-              <span class="fw-bold text-success"
-                >{{ submission.score }}/{{ assignment.max_points }}</span
-              >
+              <span class="fw-bold text-success">{{ submission.score }}/{{ assignment.max_points }}</span>
               {% else %}
               <span class="text-muted">Not graded</span>
               {% endif %}
@@ -62,8 +62,7 @@
                 href="{{ url_for('assignments.grade_submission', assignment_id=assignment.id, student_id=submission.user_id) }}"
                 class="btn btn-sm btn-primary"
               >
-                {% if submission.score is not none %}Edit Grade{% else %}Grade{%
-                endif %}
+                {% if submission.score is not none %}Edit Grade{% else %}Grade{% endif %}
               </a>
               {% else %}
               <span class="text-muted">Not submitted</span>

@@ -216,7 +216,7 @@ def course_dashboard(course_id, tab='assignments'):
     # Get announcements for this course from the database
     announcements = Announcement.query.filter_by(course_id=course_id).order_by(Announcement.created_at.desc()).all()
     
-    # Get all student submissions for this course (for instructors)
+    # Get all student submissions for this course 
     student_submissions = {}
     if is_course_owner or current_user.is_admin:
         all_submissions = StudentAssignment.query.join(Assignment).filter(
