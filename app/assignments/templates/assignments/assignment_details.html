@@ -35,28 +35,17 @@
 
           <!-- Action Buttons -->
           <div class="d-flex gap-2">
+            {% if course.professor_id == current_user.id or
+            current_user.is_admin %}
             <!-- Update -->
             <a
-              href="/assignments/{{assignment.id}}/update"
+              href="{{ url_for('assignments.update_assignment', assignment_id=assignment.id) }}"
               class="btn btn-secondary"
             >
-              Update Assignment</a
-            >
+              Update Assignment
+            </a>
+            {% endif %}
 
-            <!-- Delete Button -->
-            <!-- <form
-              method="POST"
-              action="{{ url_for('courses.delete_course', course_id=course.id) }}"
-              style="display: inline"
-            >
-              <button
-                type="submit"
-                class="btn btn-danger"
-                onclick="return confirm('Are you sure you want to delete this course?')"
-              >
-                Delete Course
-              </button>
-            </form> -->
             <!-- Back Button -->
             <a
               href="{{ url_for('courses.course_dashboard', course_id=course.id, tab='assignments') }}"
@@ -85,7 +74,9 @@
             <label class="text-muted small">Points</label>
             <p class="h6">{{ assignment.max_points }}</p>
           </div>
-          <div mb-3>
+          {% if course.professor_id == current_user.id or current_user.is_admin
+          %}
+          <div class="mb-3">
             <form
               method="POST"
               action="{{ url_for('assignments.delete_assignment', assignment_id=assignment.id) }}"
@@ -100,12 +91,10 @@
               </button>
             </form>
           </div>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<!-- delete_assignment -->
-
 {% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %} {% block body %}
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>Submissions: {{ assignment.title }}</h2>
+      <p class="text-muted mb-0">{{ course.code }} - {{ course.title }}</p>
+    </div>
+    <a
+      href="{{ url_for('courses.course_dashboard', course_id=course.id, tab='submissions') }}"
+      class="btn btn-outline-secondary"
+    >
+      ← Back to Submissions
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Student Submissions</h5>
+    </div>
+    <div class="card-body p-0">
+      {% if submissions %}
+      <table class="table table-striped mb-0">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Status</th>
+            <th>Submitted At</th>
+            <th>Score</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for submission in submissions %}
+          <tr>
+            <td>{{ submission.user.email }}</td>
+            <td>
+              {% if submission.status == 'Completed' %}
+              <span class="badge bg-success">Completed</span>
+              {% elif submission.status == 'In Progress' %}
+              <span class="badge bg-warning text-dark">In Progress</span>
+              {% else %}
+              <span class="badge bg-secondary">Not Started</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if submission.completed_at %} {{
+              submission.completed_at.strftime('%b %d, %Y at %I:%M %p') }} {%
+              else %} - {% endif %}
+            </td>
+            <td>
+              {% if submission.score is not none %}
+              <span class="fw-bold text-success"
+                >{{ submission.score }}/{{ assignment.max_points }}</span
+              >
+              {% else %}
+              <span class="text-muted">Not graded</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if submission.status == 'Completed' %}
+              <a
+                href="{{ url_for('assignments.grade_submission', assignment_id=assignment.id, student_id=submission.user_id) }}"
+                class="btn btn-sm btn-primary"
+              >
+                {% if submission.score is not none %}Edit Grade{% else %}Grade{%
+                endif %}
+              </a>
+              {% else %}
+              <span class="text-muted">Not submitted</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="p-4 text-center text-muted">
+        <p class="mb-0">No submissions for this assignment yet.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

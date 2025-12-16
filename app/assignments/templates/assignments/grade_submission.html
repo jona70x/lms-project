@@ -1,0 +1,96 @@
+{% extends "base.html" %} {% block body %}
+<div class="container mt-5">
+  <div class="mb-4">
+    <h2>Grade Submission</h2>
+    <p class="text-muted mb-0">{{ course.code }} - {{ course.title }}</p>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Assignment Details</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Assignment:</strong> {{ assignment.title }}</p>
+          <p><strong>Max Points:</strong> {{ assignment.max_points }}</p>
+          <p>
+            <strong>Due Date:</strong>
+            {% if assignment.due_date %} {{ assignment.due_date.strftime('%b %d,
+            %Y') }} {% else %} No due date {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Student Info</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Student:</strong> {{ student.email }}</p>
+          <p>
+            <strong>Status:</strong>
+            {% if student_assignment.status == 'Completed' %}
+            <span class="badge bg-success">Completed</span>
+            {% elif student_assignment.status == 'In Progress' %}
+            <span class="badge bg-warning text-dark">In Progress</span>
+            {% else %}
+            <span class="badge bg-secondary">Not Started</span>
+            {% endif %}
+          </p>
+          <p>
+            <strong>Submitted:</strong>
+            {% if student_assignment.completed_at %} {{
+            student_assignment.completed_at.strftime('%b %d, %Y at %I:%M %p') }}
+            {% else %} Not submitted {% endif %}
+          </p>
+          <p>
+            <strong>Current Score:</strong>
+            {% if student_assignment.score is not none %} {{
+            student_assignment.score }}/{{ assignment.max_points }} {% else %}
+            Not graded {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Enter Grade</h5>
+    </div>
+    <div class="card-body">
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          <label class="form-label"
+            >Score (0 - {{ assignment.max_points }})</label
+          >
+          {{ form.score(class="form-control", min="0",
+          max=assignment.max_points, placeholder="Enter score") }} {% if
+          form.score.errors %}
+          <div class="text-danger">
+            {% for error in form.score.errors %}
+            <small>{{ error }}</small>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="d-flex gap-2">
+          {{ form.submit }}
+          <a
+            href="{{ url_for('assignments.assignment_submissions', assignment_id=assignment.id) }}"
+            class="btn btn-danger border-danger-subtle"
+          >
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
