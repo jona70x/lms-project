@@ -18,17 +18,28 @@ def index():
 @main_bp.route("/dashboard")
 @login_required
 def dashboard():
-    all_courses = Course.query.all()
-
+    # notifications (keep yours for now)
     notifications = [
         {"message": "You haven’t checked Week 3 notes."},
         {"message": "New message in CMPE 102 discussion board."}
     ]
 
+    # STUDENT: only show courses the student is enrolled in
+    if current_user.is_student:
+        courses = current_user.get_enrolled_courses()
+
+    # PROFESSOR: show courses they created/teach (uses your relationship backref)
+    elif current_user.is_professor:
+        courses = current_user.created_courses  # list of Course objects
+
+    # ADMIN: show all courses
+    else:
+        courses = Course.query.all()
+
     return render_template(
         "main/dashboard.html",
-        courses=all_courses,
-        notifications=notifications
+        notifications=notifications,
+        courses=courses
     )
 
 # Messages
