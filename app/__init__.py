@@ -7,11 +7,24 @@ from app.courses import courses_bp
 """For login functionality"""
 from flask_login import LoginManager
 from app.models import User, Course, Enrollment, Assignment, StudentAssignment
+from flask_login import current_user
 
 login_manager = LoginManager()
 
 create_app = Flask(__name__)
 create_app.config.from_object(Config)
+
+# Notifications available to all templates
+@create_app.context_processor
+def inject_notifications():
+    if current_user.is_authenticated:
+        return {
+            "notifications": [
+                {"message": "You haven’t checked Week 3 notes."},
+                {"message": "New message in CMPE 102 discussion board."}
+            ]
+        }
+    return {"notifications": []}
 
 ## Login manager 
 db.init_app(create_app)

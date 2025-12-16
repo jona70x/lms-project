@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container mt-4">
+  <h1 class="mb-3">Messages</h1>
+
+  {% if threads %}
+    <div class="list-group">
+      {% for t in threads %}
+        <a href="{{ url_for('main.message_detail', msg_id=t['id']) }}"
+            class="list-group-item list-group-item-action">
+
+
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ t.subject }}</h5>
+            <small>{{ t.from }}</small>
+          </div>
+          <p class="mb-1 text-muted">{{ t.preview }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">No messages yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
+

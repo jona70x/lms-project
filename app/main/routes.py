@@ -1,28 +1,28 @@
-from flask import render_template, Blueprint, flash, redirect, url_for
+from flask import render_template, Blueprint
 from flask_login import login_required, current_user
-from app.models import Course, User, Assignment
+
+from app.models import Course, User, Assignment, Notification
 from app.config import db
 
+main_bp = Blueprint("main", __name__, template_folder="templates")
 
 
-main_bp = Blueprint("main", __name__, template_folder='templates')
-
-# root route
-@main_bp.route('/')
+# Home
+@main_bp.route("/")
 def index():
-    users = {'username' : 'Jonathan'}
-    return render_template("/main/index.html", users=users)
+    users = {"username": "Jonathan"}
+    return render_template("main/index.html", users=users)
 
-# dashboard
-@main_bp.route('/dashboard')
+
+# Dashboard
+@main_bp.route("/dashboard")
 @login_required
 def dashboard():
-
     all_courses = Course.query.all()
 
     notifications = [
-        "You haven't checked Week 3 notes.",
-        "New message in CMPE 102 discussion board."
+        {"message": "You haven’t checked Week 3 notes."},
+        {"message": "New message in CMPE 102 discussion board."}
     ]
 
     return render_template(
@@ -31,9 +31,35 @@ def dashboard():
         notifications=notifications
     )
 
+# Messages
+@main_bp.route("/messages")
+@login_required
+def messages():
+    threads = [
+        {"id": 1, "from": "Instructor", "subject": "Welcome to the course", "preview": "Let’s have a great semester..."},
+        {"id": 2, "from": "TA", "subject": "Assignment reminder", "preview": "Don’t forget Homework 1..."},
+    ]
+    return render_template("main/messages.html", threads=threads)
 
-# GPA calculator 
-@main_bp.route('/gpa')
+
+@main_bp.route("/messages/<int:msg_id>")
+@login_required
+def message_detail(msg_id):
+    threads = [
+        {"id": 1, "from": "Instructor", "subject": "Welcome to the course", "preview": "Let’s have a great semester...", "body": "Welcome! Please read the syllabus and check the schedule."},
+        {"id": 2, "from": "TA", "subject": "Assignment reminder", "preview": "Don’t forget Homework 1...", "body": "Homework 1 is due this Friday at 11:59PM."},
+    ]
+
+    msg = next((t for t in threads if t["id"] == msg_id), None)
+    if not msg:
+        flash("Message not found.", "danger")
+        return redirect(url_for("main.messages"))
+
+    return render_template("main/message_detail.html", msg=msg)
+
+
+# GPA calculator
+@main_bp.route("/gpa")
 @login_required
 def gpa_calculator():
     sample_courses = [
@@ -42,7 +68,7 @@ def gpa_calculator():
         {"name": "Math 32 - Calculus II", "units": 4, "grade": "A-"},
     ]
 
-    current_gpa = 3.75  
+    current_gpa = 3.75
 
     return render_template(
         "main/gpa_calculator.html",
@@ -50,27 +76,15 @@ def gpa_calculator():
         current_gpa=current_gpa
     )
 
-# Assignments
-@main_bp.route('/courses/<int:course_id>/assignments')
+
+# Assignments (demo page)
+@main_bp.route("/courses/<int:course_id>/assignments")
 @login_required
 def assignments_list(course_id):
-    # real assignment details
-    
+    # Fake assignment details for now (replace with Assignment.query later)
     fake_assignments = [
-        {
-            "id": 1,
-            "title": "Homework 1",
-            "due_date": "2025-03-10",
-            "points": 100,
-            "status": "Submitted"
-        },
-        {
-            "id": 2,
-            "title": "Project Proposal",
-            "due_date": "2025-03-15",
-            "points": 50,
-            "status": "Not submitted"
-        },
+        {"id": 1, "title": "Homework 1", "due_date": "2025-03-10", "points": 100, "status": "Submitted"},
+        {"id": 2, "title": "Project Proposal", "due_date": "2025-03-15", "points": 50, "status": "Not submitted"},
     ]
 
     return render_template(
