@@ -72,7 +72,7 @@
             </li>
 
             <!-- NOTIFICATIONS -->
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a
                 class="nav-link position-relative {% if request.path.startswith('/notifications') %}active fw-bold{% endif %}"
                 href="{{ url_for('main.dashboard') }}"
@@ -86,7 +86,7 @@
                 </span>
                 {% endif %}
               </a>
-            </li>
+            </li> -->
 
             <!-- STUDENT LINKS -->
             {% if current_user.is_student %}
@@ -116,25 +116,19 @@
                 class="nav-link {% if request.path.startswith('/courses/created') %}active fw-bold{% endif %}"
                 href="{{ url_for('courses.my_created_courses') }}"
               >
-                My Created Courses
+                My Courses
               </a>
             </li>
+            {% endif %}
 
+            <!-- ADMIN ONLY LINKS -->
+            {% if current_user.is_admin %}
             <li class="nav-item">
               <a
                 class="nav-link {% if request.path.startswith('/assignments') %}active fw-bold{% endif %}"
                 href="{{ url_for('assignments.index') }}"
               >
                 Assignments
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a
-                class="nav-link {% if request.path.startswith('/courses/create') %}active fw-bold{% endif %}"
-                href="{{ url_for('courses.create_course') }}"
-              >
-                New Course
               </a>
             </li>
             {% endif %} {% endif %}

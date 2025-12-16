@@ -1,7 +1,7 @@
 from flask import abort, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app.decorators import roles_required
-from app.models import Course, User, Assignment, Enrollment, StudentAssignment
+from app.models import Course, User, Assignment, Enrollment, StudentAssignment, Announcement
 from app.config import db
 from app.courses.course_form import CourseForm
 from app.courses import courses_bp
@@ -95,7 +95,6 @@ def drop_course(course_id):
 # course detail page
 @courses_bp.route('/<int:course_id>')
 def course_detail(course_id):
-    """This function prints details of a specific course"""
     course = Course.query.get_or_404(course_id)
 
     is_enrolled = False
@@ -214,10 +213,17 @@ def course_dashboard(course_id, tab='assignments'):
     else:
         letter_grade = 'F'
     
-    announcements = [
-        {'title': 'Welcome to the course!', 'date': 'Dec 10, 2025', 'content': 'Welcome everyone to this course. Please review the syllabus.'},
-        {'title': 'Office Hours Update', 'date': 'Dec 8, 2025', 'content': 'Office hours have been moved to Wednesdays 2-4pm.'},
-    ]
+    # Get announcements for this course from the database
+    announcements = Announcement.query.filter_by(course_id=course_id).order_by(Announcement.created_at.desc()).all()
+    
+    # Get all student submissions for this course (for instructors)
+    student_submissions = {}
+    if is_course_owner or current_user.is_admin:
+        all_submissions = StudentAssignment.query.join(Assignment).filter(
+            Assignment.course_id == course_id
+        ).all()
+        for submission in all_submissions:
+            student_submissions[(submission.assignment_id, submission.user_id)] = submission
     
     return render_template(
         'courses/course_dashboard.html',
@@ -232,7 +238,8 @@ def course_dashboard(course_id, tab='assignments'):
         total_points_possible=total_points_possible,
         current_grade=round(current_grade, 1),
         letter_grade=letter_grade,
-        announcements=announcements
+        announcements=announcements,
+        student_submissions=student_submissions
     )
 
 
@@ -244,6 +251,12 @@ def create_course():
     course_form = CourseForm()
 
     if course_form.validate_on_submit():
+       # Check if course code already exists
+       existing_course = Course.query.filter_by(code=course_form.code.data).first()
+       if existing_course:
+           flash('A course with this ID already exists. Please change the ID.', 'danger')
+           return render_template('courses/new_course.html', form=course_form)
+       
        course_data= {
         'code' : course_form.code.data,
         'title' : course_form.title.data,
@@ -311,6 +324,12 @@ def update_course(course_id):
     
     # Updating all fields
     if course_form.validate_on_submit():
+       # Check if course code already exists (and it's not the current course)
+       existing_course = Course.query.filter_by(code=course_form.code.data).first()
+       if existing_course and existing_course.id != course_info.id:
+           flash('A course with this ID already exists. Please change the ID.', 'danger')
+           return render_template('courses/update_course.html', form=course_form, course_info=course_info)
+       
        course_info.code = course_form.code.data
        course_info.title = course_form.title.data
        course_info.description = course_form.description.data

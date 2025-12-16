@@ -127,6 +127,13 @@ class Course(db.Model):
         cascade='all,delete-orphan'
     )
 
+    announcements = db.relationship(
+        'Announcement',
+        back_populates='course',
+        lazy='dynamic',
+        cascade='all,delete-orphan'
+    )
+
     def get_enrolled_students(self):
         return User.query.join(Enrollment).filter(
             Enrollment.course_id == self.id
@@ -259,3 +266,20 @@ class Notification(db.Model):
     message = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_read = db.Column(db.Boolean, default=False)
+
+
+# Announcement model
+class Announcement(db.Model):
+    __tablename__ = "announcements"
+
+    id = db.Column(db.Integer, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationship back to Course
+    course = db.relationship('Course', back_populates='announcements')
+
+    def __repr__(self):
+        return f'<Announcement {self.title} for Course {self.course_id}>'

@@ -45,7 +45,17 @@
 
           <!-- Action Buttons -->
           <div class="d-flex gap-2">
-            {% if current_user.is_authenticated %} {% if is_enrolled %}
+            {% if current_user.is_authenticated and (course.professor_id ==
+            current_user.id or current_user.is_admin) %}
+            <!-- Update -->
+            <a
+              href="{{ url_for('courses.update_course', course_id=course.id) }}"
+              class="btn btn-secondary"
+            >
+              Update Course</a
+            >
+
+            {% elif is_enrolled %}
             <!-- Drop Course Button -->
             <form
               method="POST"
@@ -61,8 +71,9 @@
               </button>
             </form>
 
-            {% elif course.availability %}
-            <!-- Enroll Button -->
+            {% elif current_user.is_authenticated and current_user.is_student
+            and course.availability %}
+            <!-- Enroll Button (for students only) -->
             <form
               method="POST"
               action="{{ url_for('courses.enroll_course', course_id=course.id) }}"
@@ -71,23 +82,16 @@
               <button type="submit" class="btn btn-primary">Enroll Now</button>
             </form>
 
-            <!-- Update -->
-            <a
-              href="{{ url_for('courses.update_course', course_id=course.id) }}"
-              class="btn btn-secondary"
-            >
-              Update Course</a
-            >
-
-            {% else %}
-            <button type="button" class="btn btn-secondary" disabled>
-              Course Not Available
-            </button>
-            {% endif %} {% else %}
+            {% elif not current_user.is_authenticated and course.availability %}
             <!-- Login Required -->
             <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
               Login to Enroll
             </a>
+
+            {% elif not course.availability %}
+            <button type="button" class="btn btn-secondary" disabled>
+              Course Not Available
+            </button>
             {% endif %}
 
             <!-- Delete Button -->

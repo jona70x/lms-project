@@ -29,6 +29,13 @@ def register():
         flash('Registration successful!, Please login in', 'success')
 
         return redirect(url_for('auth.login'))
+    
+    # Display form validation errors if they exist
+    if form.errors:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(error, 'danger')
+    
     return render_template('auth/register.html', form=form)
     
 

@@ -20,6 +20,14 @@
           >
             Grades
           </a>
+          {% if is_course_owner or current_user.is_admin %}
+          <a
+            href="{{ url_for('courses.course_dashboard', course_id=course.id, tab='submissions') }}"
+            class="list-group-item list-group-item-action {% if active_tab == 'submissions' %}active{% endif %}"
+          >
+            Submissions
+          </a>
+          {% endif %}
           <a
             href="{{ url_for('courses.course_dashboard', course_id=course.id, tab='people') }}"
             class="list-group-item list-group-item-action {% if active_tab == 'people' %}active{% endif %}"
@@ -67,7 +75,15 @@
           <h6 class="mb-0">Actions</h6>
         </div>
         <div class="card-body">
-          {% if current_user.is_authenticated %} {% if is_enrolled %}
+          {% if current_user.is_authenticated %} {% if is_course_owner or
+          current_user.is_admin %}
+          <a
+            href="{{ url_for('courses.update_course', course_id=course.id) }}"
+            class="btn btn-primary btn-sm w-100"
+          >
+            Edit Course
+          </a>
+          {% elif is_enrolled %}
           <form
             method="POST"
             action="{{ url_for('courses.drop_course', course_id=course.id) }}"
@@ -206,7 +222,7 @@
                 {% if is_course_owner or current_user.is_admin %}
                 <div class="mt-2">
                   <a
-                    href="{{ url_for('assignments.edit_assignment', assignment_id=assignment.id) }}"
+                    href="{{ url_for('assignments.update_assignment', assignment_id=assignment.id) }}"
                     class="btn btn-outline-secondary btn-sm me-1"
                     >Edit</a
                   >
@@ -393,28 +409,165 @@
           class="card-header bg-light d-flex justify-content-between align-items-center"
         >
           <h5 class="mb-0">Announcements</h5>
-          {% if current_user.is_professor or current_user.is_admin %}
-          <button
+          {% if is_course_owner or current_user.is_admin %}
+          <a
+            href="{{ url_for('announcements.create_announcement', course_id=course.id) }}"
             class="btn btn-sm btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#newAnnouncementModal"
           >
-            New Announcement
-          </button>
+            + New Announcement
+          </a>
           {% endif %}
         </div>
         <div class="card-body">
           {% if announcements %} {% for announcement in announcements %}
-          <div class="border-bottom pb-3 mb-3">
-            <h6>{{ announcement.title }}</h6>
-            <p class="text-muted small mb-2">
-              Posted on {{ announcement.date }}
-            </p>
-            <p>{{ announcement.content }}</p>
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <h5 class="card-title mb-1">{{ announcement.title }}</h5>
+                  <p class="text-muted small mb-2">
+                    Posted on {{ announcement.created_at.strftime('%b %d, %Y at
+                    %I:%M %p') }}
+                  </p>
+                </div>
+                {% if is_course_owner or current_user.is_admin %}
+                <div class="d-flex gap-2">
+                  <a
+                    href="{{ url_for('announcements.update_announcement', announcement_id=announcement.id) }}"
+                    class="btn btn-outline-secondary btn-sm"
+                  >
+                    Edit
+                  </a>
+                  <form
+                    method="POST"
+                    action="{{ url_for('announcements.delete_announcement', announcement_id=announcement.id) }}"
+                    style="display: inline"
+                  >
+                    <button
+                      type="submit"
+                      class="btn btn-outline-danger btn-sm"
+                      onclick="return confirm('Delete this announcement?');"
+                    >
+                      Delete
+                    </button>
+                  </form>
+                </div>
+                {% endif %}
+              </div>
+              <p class="card-text">{{ announcement.content }}</p>
+            </div>
           </div>
           {% endfor %} {% else %}
           <div class="text-center text-muted py-4">
             <p class="mb-0">No announcements for this course yet.</p>
+            {% if is_course_owner or current_user.is_admin %}
+            <a
+              href="{{ url_for('announcements.create_announcement', course_id=course.id) }}"
+              class="btn btn-primary mt-3"
+            >
+              Create Your First Announcement
+            </a>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% elif active_tab == 'submissions' and (is_course_owner or
+      current_user.is_admin) %}
+      <!-- SUBMISSIONS TAB (Instructors Only) -->
+      <div class="card">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Student Submissions</h5>
+        </div>
+        <div class="card-body">
+          {% if assignments %}
+          <div class="accordion" id="submissionsAccordion">
+            {% for assignment in assignments %}
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse{{ assignment.id }}"
+                >
+                  {{ assignment.title }}
+                  <span class="badge bg-info ms-2"
+                    >{{ assignment.max_points }} pts</span
+                  >
+                </button>
+              </h2>
+              <div
+                id="collapse{{ assignment.id }}"
+                class="accordion-collapse collapse"
+                data-bs-parent="#submissionsAccordion"
+              >
+                <div class="accordion-body p-0">
+                  <table class="table table-striped mb-0">
+                    <thead>
+                      <tr>
+                        <th>Student</th>
+                        <th>Status</th>
+                        <th>Score</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for student in enrolled_students %} {% set submission =
+                      student_submissions.get((assignment.id, student.id)) %}
+                      <tr>
+                        <td>{{ student.email }}</td>
+                        <td>
+                          {% if submission %} {% if submission.status ==
+                          'Completed' %}
+                          <span class="badge bg-success">Completed</span>
+                          {% elif submission.status == 'In Progress' %}
+                          <span class="badge bg-warning text-dark"
+                            >In Progress</span
+                          >
+                          {% else %}
+                          <span class="badge bg-secondary">Not Started</span>
+                          {% endif %} {% else %}
+                          <span class="badge bg-secondary">Not Started</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if submission and submission.score is not none %}
+                          <span class="fw-bold text-success"
+                            >{{ submission.score }}/{{ assignment.max_points
+                            }}</span
+                          >
+                          {% else %}
+                          <span class="text-muted">-</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if submission and submission.status == 'Completed'
+                          %}
+                          <a
+                            href="{{ url_for('assignments.grade_submission', assignment_id=assignment.id, student_id=student.id) }}"
+                            class="btn btn-sm btn-primary"
+                          >
+                            {% if submission.score is not none %}Edit Grade{%
+                            else %}Grade{% endif %}
+                          </a>
+                          {% else %}
+                          <span class="text-muted">Not submitted</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="text-center text-muted py-4">
+            <p class="mb-0">No assignments created yet.</p>
           </div>
           {% endif %}
         </div>
