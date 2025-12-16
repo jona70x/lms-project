@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{%block index%}
+{%block body%}
 <div class="container mt-4">
 
   <h1 class="mb-3">Dashboard</h1>
@@ -22,29 +22,50 @@
   {% endif %}
 
 
-
-  <!-- Courses -->
+<!-- Courses -->
+{% if current_user.is_student %}
   <h3>Your Courses</h3>
-  {% if courses %}
-    <div class="row">
-      {% for course in courses %}
-        <div class="col-md-4 mb-3">
-          <div class="card">
-            <div class="card-body">
-              <h5>{{ course.course_name }}</h5>
-              <p>
-                Max Students: {{ course.max_students }} <br>
-                Enrolled: {{ course.get_student_count() }}
-              </p>
-              <a href="#" class="btn btn-sm btn-primary">View Course</a>
+{% elif current_user.is_professor %}
+  <h3>Courses You Teach</h3>
+{% else %}
+  <h3>All Courses</h3>
+{% endif %}
+
+{% if courses and courses|length > 0 %}
+  <div class="row">
+    {% for course in courses %}
+      <div class="col-md-4 mb-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title mb-1">{{ course.code }}</h5>
+            <div class="text-muted mb-2">{{ course.title }}</div>
+
+            <div class="small">
+              <div><strong>Units:</strong> {{ course.credits }}</div>
+              <div><strong>Format:</strong> {{ course.format }}</div>
+              <div><strong>Professor:</strong> {{ course.professor or "TBD" }}</div>
+              <div><strong>Enrolled:</strong> {{ course.get_student_count() }}{% if course.max_students %} / {{ course.max_students }}{% endif %}</div>
             </div>
+
+            <a href="{{ url_for('courses.course_dashboard', course_id=course.id) }}"
+               class="btn btn-sm btn-primary mt-3">
+              View Course
+            </a>
           </div>
         </div>
-      {% endfor %}
-    </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  {% if current_user.is_student %}
+    <p>You are not enrolled in any courses yet. Go to <a href="{{ url_for('courses.courses_list') }}">Browse Courses</a>.</p>
+  {% elif current_user.is_professor %}
+    <p>You haven’t created any courses yet. Go to <a href="{{ url_for('courses.my_courses') }}">My Course</a>.</p>
   {% else %}
-    <p>You are not enrolled in any courses yet.</p>
+    <p>No courses found.</p>
   {% endif %}
+{% endif %}
 
 </div>
 {% endblock %}
+

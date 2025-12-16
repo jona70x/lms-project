@@ -1,16 +1,22 @@
 {% extends "base.html" %} {%block index %}
-<div class="p-5 mb-4 bg-body-tertiary rounded-3">
-  <h1 class="display-5 fw-bold">Welcome to IntelliGrades, Students</h1>
+<div class="p-5 mb-4 bg-body-tertiary rounded-3 dropshadow">
+  <h1 class="display-5 fw-bold">
+    Welcome to
+    <span class="logo-intelli">intelli</span
+    ><span class="logo-grades">Grades</span>, Students
+  </h1>
   <p class="col-md-12 fs-4">
-    IntelliGrades is an advanced LMS system that integrates smarter tools like
-    assignment deadline notification reminders, GPA calculator, academic and
-    course planning, collaborative tools like a live chat box/chatting channels
-    in one simple and easy to navigate platform. Being an student has never been
-    more fun!
+    intelli<span class="semibold">Grades</span> is an advanced LMS system that
+    integrates smarter tools like assignment deadline notification reminders,
+    GPA calculator, academic and course planning, collaborative tools like a
+    live chat box/chatting channels in one simple and easy to navigate platform.
+    Being an student has never been more fun!
   </p>
+  {% if not current_user.is_authenticated %}
   <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg"
     >Get me started!</a
   >
+  {% endif %}
 </div>
 <div class="row align-items-md-stretch">
   <div class="col-md-6">
@@ -32,11 +38,9 @@
   <div class="col-md-6">
     <div class="h-100 p-5 bg-body-tertiary border rounded-3">
       <h2>Use our GPA calculator</h2>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
-        assumenda eaque, voluptates sunt voluptatem placeat asperiores deleniti
-        quis earum beatae veritatis aut laboriosam necessitatibus alias
-        molestias harum facere ipsam corrupti?
+      <p class="fs-4">
+        See your current GPA, and calculate how it can change based on your
+        grades.
       </p>
       <button
         class="btn btn-outline-secondary"

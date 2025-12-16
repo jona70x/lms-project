@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, request
 from flask_login import login_required, current_user
 
 from app.models import Course, User, Assignment, Notification
@@ -18,17 +18,28 @@ def index():
 @main_bp.route("/dashboard")
 @login_required
 def dashboard():
-    all_courses = Course.query.all()
-
+    # notifications (keep yours for now)
     notifications = [
         {"message": "You haven’t checked Week 3 notes."},
         {"message": "New message in CMPE 102 discussion board."}
     ]
 
+    # STUDENT: only show courses the student is enrolled in
+    if current_user.is_student:
+        courses = current_user.get_enrolled_courses()
+
+    # PROFESSOR: show courses they created/teach (uses your relationship backref)
+    elif current_user.is_professor:
+        courses = current_user.created_courses  # list of Course objects
+
+    # ADMIN: show all courses
+    else:
+        courses = Course.query.all()
+
     return render_template(
         "main/dashboard.html",
-        courses=all_courses,
-        notifications=notifications
+        notifications=notifications,
+        courses=courses
     )
 
 # Messages
@@ -58,22 +69,76 @@ def message_detail(msg_id):
     return render_template("main/message_detail.html", msg=msg)
 
 
-# GPA calculator
-@main_bp.route("/gpa")
+from flask import render_template, Blueprint, request
+from flask_login import login_required, current_user
+
+from app.models import Course, User, Assignment, Notification
+from app.config import db
+
+# ...
+
+@main_bp.route("/gpa", methods=["GET", "POST"])
 @login_required
 def gpa_calculator():
-    sample_courses = [
-        {"name": "CS 146 - Data Structures", "units": 4, "grade": "A"},
-        {"name": "CMPE 102 - Assembly Language", "units": 3, "grade": "B+"},
-        {"name": "Math 32 - Calculus II", "units": 4, "grade": "A-"},
-    ]
+    grade_scale = {
+        "A": 4.0, "A-": 3.7,
+        "B+": 3.3, "B": 3.0, "B-": 2.7,
+        "C+": 2.3, "C": 2.0, "C-": 1.7,
+        "D+": 1.3, "D": 1.0,
+        "F": 0.0,
+    }
 
-    current_gpa = 3.75
+    current_gpa = None
+
+    if request.method == "GET":
+        # pull courses from DB for this user
+        db_courses = current_user.get_enrolled_courses() 
+        courses = [
+            {
+                "name": f"{c.code} - {c.title}",
+                "units": c.credits,
+                "grade": "",  # TODO dynamically update with current grade
+            }
+            for c in db_courses
+        ]
+
+    else:  # POST
+        course_names = request.form.getlist("course_name")
+        units_list   = request.form.getlist("units")
+        grades       = request.form.getlist("grade")
+
+        total_points = 0.0
+        total_units  = 0.0
+        courses      = []
+
+        for name, u, g in zip(course_names, units_list, grades):
+            if not name:
+                continue
+
+            try:
+                units = float(u) if u else 0.0
+            except ValueError:
+                units = 0.0
+
+            courses.append({
+                "name": name,
+                "units": units,
+                "grade": g,
+            })
+
+            if not g or units <= 0:
+                continue
+
+            total_units  += units
+            total_points += grade_scale.get(g, 0.0) * units
+
+        if total_units > 0:
+            current_gpa = round(total_points / total_units, 2)
 
     return render_template(
         "main/gpa_calculator.html",
-        courses=sample_courses,
-        current_gpa=current_gpa
+        courses=courses,
+        current_gpa=current_gpa,
     )
 
 
