@@ -1,13 +1,13 @@
 {% extends "base.html" %} {% block body %}
 <div class="container mt-5">
-  <h2>Create New Assignment</h2>
+  <h2>Create New Announcement</h2>
 
   <div class="card mt-4">
     <div class="card-body">
       <form method="POST">
         {{ form.hidden_tag() }}
 
-        <!-- Course info as read-only if course is specified -->
+        <!-- Course info show as read-only if course is specified -->
         {% if course %}
         <div class="mb-3">
           <label class="form-label">Course</label>
@@ -45,38 +45,13 @@
           {% endif %}
         </div>
 
-        <!-- Description -->
+        <!-- Content -->
         <div class="mb-3">
-          {{ form.description.label(class="form-label") }} {{
-          form.description(class="form-control") }} {% if
-          form.description.errors %}
+          {{ form.content.label(class="form-label") }} {{
+          form.content(class="form-control", rows="5") }} {% if
+          form.content.errors %}
           <div class="text-danger">
-            {% for error in form.description.errors %}
-            <small>{{ error }}</small>
-            {% endfor %}
-          </div>
-          {% endif %}
-        </div>
-
-        <!-- Due Date -->
-        <div class="mb-3">
-          {{ form.due_date.label(class="form-label") }} {{
-          form.due_date(class="form-control") }} {% if form.due_date.errors %}
-          <div class="text-danger">
-            {% for error in form.due_date.errors %}
-            <small>{{ error }}</small>
-            {% endfor %}
-          </div>
-          {% endif %}
-        </div>
-
-        <!-- Max Points -->
-        <div class="mb-3">
-          {{ form.max_points.label(class="form-label") }} {{
-          form.max_points(class="form-control") }} {% if form.max_points.errors
-          %}
-          <div class="text-danger">
-            {% for error in form.max_points.errors %}
+            {% for error in form.content.errors %}
             <small>{{ error }}</small>
             {% endfor %}
           </div>
@@ -87,13 +62,13 @@
         <div class="d-flex gap-2">
           {{ form.submit }} {% if course_id %}
           <a
-            href="{{ url_for('courses.course_dashboard', course_id=course_id, tab='assignments') }}"
+            href="{{ url_for('courses.course_dashboard', course_id=course_id, tab='announcements') }}"
             class="btn btn-danger border-danger-subtle"
             >Cancel</a
           >
           {% else %}
           <a
-            href="{{ url_for('assignments.index') }}"
+            href="{{ url_for('courses.courses_list') }}"
             class="btn btn-danger border-danger-subtle"
             >Cancel</a
           >
