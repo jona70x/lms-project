@@ -1,44 +1,44 @@
 from flask import Flask
+from flask_login import LoginManager, current_user
 from app.config import Config, db
 from app.auth.routes import authentication_bp
 from app.main.routes import main_bp
 from app.assignments.routes import assignments_bp
 from app.courses import courses_bp
-"""For login functionality"""
-from flask_login import LoginManager
-from app.models import User, Course, Enrollment, Assignment, StudentAssignment
-from flask_login import current_user
+from app.models import User, Notification
 
 login_manager = LoginManager()
-
-create_app = Flask(__name__)
-create_app.config.from_object(Config)
-
-# Notifications available to all templates
-@create_app.context_processor
-def inject_notifications():
-    if current_user.is_authenticated:
-        return {
-            "notifications": [
-                {"message": "You haven’t checked Week 3 notes."},
-                {"message": "New message in CMPE 102 discussion board."}
-            ]
-        }
-    return {"notifications": []}
-
-## Login manager 
-db.init_app(create_app)
-login_manager.init_app(create_app)
-login_manager.login_view = "auth.login" # endpoint to visit
+login_manager.login_view = "auth.login"
 login_manager.login_message = "Please log in to access this page."
-
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# registering main and auth routes
-create_app.register_blueprint(authentication_bp, url_prefix = '/auth')
-create_app.register_blueprint(main_bp, url_prefix = '/')
-create_app.register_blueprint(assignments_bp, url_prefix = '/assignments')
-create_app.register_blueprint(courses_bp, url_prefix = '/courses')
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
+
+    db.init_app(app)
+    login_manager.init_app(app)
+
+    # blueprints
+    app.register_blueprint(authentication_bp, url_prefix="/auth")
+    app.register_blueprint(main_bp)  # <-- no prefix, so "/" works
+    app.register_blueprint(assignments_bp, url_prefix="/assignments")
+    app.register_blueprint(courses_bp, url_prefix="/courses")
+
+    # Notifications available to all templates
+    @app.context_processor
+    def inject_notifications():
+        if current_user.is_authenticated:
+            notifications = (Notification.query
+                .filter_by(user_id=current_user.id, is_read=False)
+                .order_by(Notification.created_at.desc())
+                .limit(5)
+                .all()
+            )
+            return dict(notifications=notifications)
+        return dict(notifications=[])
+
+    return app

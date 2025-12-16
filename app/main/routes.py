@@ -13,27 +13,29 @@ def index():
     users = {"username": "Jonathan"}
     return render_template("main/index.html", users=users)
 
-
 # Dashboard
 @main_bp.route("/dashboard")
 @login_required
 def dashboard():
-    # notifications (keep yours for now)
-    notifications = [
-        {"message": "You haven’t checked Week 3 notes."},
-        {"message": "New message in CMPE 102 discussion board."}
-    ]
+    # Notifications (dashboard-only)
+    notifications = Notification.query.filter_by(
+        user_id=current_user.id,
+        is_read=False
+    ).order_by(Notification.created_at.desc()).all()
 
-    # STUDENT: only show courses the student is enrolled in
+    # Mark notifications as read AFTER displaying them
+    for n in notifications:
+        n.is_read = True
+    db.session.commit()
+
+    # Role-based courses
     if current_user.is_student:
         courses = current_user.get_enrolled_courses()
 
-    # PROFESSOR: show courses they created/teach (uses your relationship backref)
     elif current_user.is_professor:
-        courses = current_user.created_courses  # list of Course objects
+        courses = current_user.created_courses  # from backref
 
-    # ADMIN: show all courses
-    else:
+    else:  # admin
         courses = Course.query.all()
 
     return render_template(
