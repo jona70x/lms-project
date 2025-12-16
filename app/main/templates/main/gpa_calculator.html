@@ -1,38 +1,95 @@
 {% extends "base.html" %}
 
-{%block body%}
-<div class="container mt-4">
-  <h1 class="mb-3">GPA Calculator</h1>
-
-  <h4>Your Courses</h4>
-  {% if courses %}
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Course</th>
-          <th>Units</th>
-          <th>Grade</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for c in courses %}
-        <tr>
-          <td>{{ c.name }}</td>
-          <td>{{ c.units }}</td>
-          <td>{{ c.grade }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>No courses available.</p>
-  {% endif %}
-
-  <h4>Current GPA</h4>
-  <p class="fs-4">{{ current_gpa }}</p>
-
+{% block body %}
+<div class="container my-4">
+  <h1 class="mb-3">"What-If" <strong>GPA Calculator</strong></h1>
   <p class="text-muted">
-    (Later, this page can let you change grades and recalculate.)
+    Enter the units and grades for your courses. GPA updates automatically.
   </p>
+
+  <form id="whatIfForm">
+    <div class="table-responsive">
+      <table class="table align-middle" id="whatifTable">
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th style="width: 140px;">Units</th>
+            <th style="width: 160px;">Grade</th>
+            <th style="width: 60px;"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for c in courses %}
+          <tr data-enrolled="true">
+            <td class="align-middle">
+              <span class="text-muted">{{ c.name }}</span>
+              <input type="hidden" name="course_name" value="{{ c.name }}">
+            </td>
+
+            <td class="align-middle">
+              <span class="text-muted">{{ c.units }}</span>
+              <input
+                type="hidden"
+                name="units"
+                value="{{ c.units }}"
+              >
+            </td>
+
+            <td class="align-middle">
+              <select class="form-select" name="grade">
+                <option value="">Select grade</option>
+                {% for g in ["A","A-","B+","B","B-","C+","C","C-","D+","D","F"] %}
+                <option value="{{ g }}" {% if c.grade == g %}selected{% endif %}>
+                  {{ g }}
+                </option>
+                {% endfor %}
+              </select>
+            </td>
+
+            <td class="align-middle text-center">
+              <button
+                type="button"
+                class="btn btn-outline-danger btn-sm invisible"
+                tabindex="-1"
+                aria-hidden="true"
+              >
+                ✕
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
+      <button type="button" class="btn btn-secondary" id="addClassBtn">
+        + Add Class
+      </button>
+
+      <p class="text-muted mb-0 ms-3">
+        <strong>NOTE:</strong> This tool is for planning only and does
+        <strong>NOT update your official record or GPA.</strong>
+      </p>
+    </div>
+  </form>
+
+  <div class="mt-4">
+    <h4>
+      Calculated GPA:
+      <span class="fw-bold" id="gpaValue">
+        {% if current_gpa is not none %}
+          {{ current_gpa }}
+        {% else %}
+          –
+        {% endif %}
+      </span>
+    </h4>
+  </div>
 </div>
+
+<!--GPA Functionality-->
+<script src="{{ url_for('static', filename='js/what_if_gpa.js') }}"></script>
+
 {% endblock %}
