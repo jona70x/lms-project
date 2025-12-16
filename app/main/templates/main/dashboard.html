@@ -1,71 +1,75 @@
-{% extends "base.html" %}
-
-{%block body%}
+{% extends "base.html" %} {%block body%}
 <div class="container mt-4">
-
   <h1 class="mb-3">Dashboard</h1>
-  <p class="text-muted">Welcome, {{ current_user.email }}!</p>
+  <h2 class="text-muted">
+    {% set username = current_user.email.split('@')[0].capitalize()%} Hello, {{
+    username }}!
+  </h2>
 
   <!-- Notifications -->
-   <h3 class="mt-4">Notifications</h3>
+  <h3 class="mt-4">Notifications</h3>
 
   {% if notifications %}
-    <ul class="list-group mb-4">
-      {% for n in notifications %}
-        <li class="list-group-item">
-          {{ n.message }}
-        </li>
-      {% endfor %}
-    </ul>
+  <ul class="list-group mb-4">
+    {% for n in notifications %}
+    <li class="list-group-item">{{ n.message }}</li>
+    {% endfor %}
+  </ul>
   {% else %}
-    <p>No new notifications.</p>
+  <p>No new notifications.</p>
   {% endif %}
 
-
-<!-- Courses -->
-{% if current_user.is_student %}
+  <!-- Courses -->
+  {% if current_user.is_student %}
   <h3>Your Courses</h3>
-{% elif current_user.is_professor %}
+  {% elif current_user.is_professor %}
   <h3>Courses You Teach</h3>
-{% else %}
+  {% else %}
   <h3>All Courses</h3>
-{% endif %}
-
-{% if courses and courses|length > 0 %}
+  {% endif %} {% if courses and courses|length > 0 %}
   <div class="row">
     {% for course in courses %}
-      <div class="col-md-4 mb-3">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title mb-1">{{ course.code }}</h5>
-            <div class="text-muted mb-2">{{ course.title }}</div>
+    <div class="col-md-4 mb-3">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-1">{{ course.code }}</h5>
+          <div class="text-muted mb-2">{{ course.title }}</div>
 
-            <div class="small">
-              <div><strong>Units:</strong> {{ course.credits }}</div>
-              <div><strong>Format:</strong> {{ course.format }}</div>
-              <div><strong>Professor:</strong> {{ course.professor or "TBD" }}</div>
-              <div><strong>Enrolled:</strong> {{ course.get_student_count() }}{% if course.max_students %} / {{ course.max_students }}{% endif %}</div>
+          <div class="small">
+            <div><strong>Units:</strong> {{ course.credits }}</div>
+            <div><strong>Format:</strong> {{ course.format }}</div>
+            <div>
+              <strong>Professor:</strong> {{ course.professor or "TBD" }}
             </div>
-
-            <a href="{{ url_for('courses.course_dashboard', course_id=course.id) }}"
-               class="btn btn-sm btn-primary mt-3">
-              View Course
-            </a>
+            <div>
+              <strong>Enrolled:</strong> {{ course.get_student_count() }}{% if
+              course.max_students %} / {{ course.max_students }}{% endif %}
+            </div>
           </div>
+
+          <a
+            href="{{ url_for('courses.course_dashboard', course_id=course.id) }}"
+            class="btn btn-sm btn-primary mt-3"
+          >
+            View Course
+          </a>
         </div>
       </div>
+    </div>
     {% endfor %}
   </div>
-{% else %}
-  {% if current_user.is_student %}
-    <p>You are not enrolled in any courses yet. Go to <a href="{{ url_for('courses.courses_list') }}">Browse Courses</a>.</p>
+  {% else %} {% if current_user.is_student %}
+  <p>
+    You are not enrolled in any courses yet. Go to
+    <a href="{{ url_for('courses.courses_list') }}">Browse Courses</a>.
+  </p>
   {% elif current_user.is_professor %}
-    <p>You haven’t created any courses yet. Go to <a href="{{ url_for('courses.my_courses') }}">My Course</a>.</p>
+  <p>
+    You haven’t created any courses yet. Go to
+    <a href="{{ url_for('courses.my_courses') }}">My Course</a>.
+  </p>
   {% else %}
-    <p>No courses found.</p>
-  {% endif %}
-{% endif %}
-
+  <p>No courses found.</p>
+  {% endif %} {% endif %}
 </div>
 {% endblock %}
-
