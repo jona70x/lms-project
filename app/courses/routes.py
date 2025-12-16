@@ -244,6 +244,12 @@ def create_course():
     course_form = CourseForm()
 
     if course_form.validate_on_submit():
+       # Check if course code already exists
+       existing_course = Course.query.filter_by(code=course_form.code.data).first()
+       if existing_course:
+           flash('A course with this ID already exists. Please change the ID.', 'danger')
+           return render_template('courses/new_course.html', form=course_form)
+       
        course_data= {
         'code' : course_form.code.data,
         'title' : course_form.title.data,
@@ -311,6 +317,12 @@ def update_course(course_id):
     
     # Updating all fields
     if course_form.validate_on_submit():
+       # Check if course code already exists (and it's not the current course)
+       existing_course = Course.query.filter_by(code=course_form.code.data).first()
+       if existing_course and existing_course.id != course_info.id:
+           flash('A course with this ID already exists. Please change the ID.', 'danger')
+           return render_template('courses/update_course.html', form=course_form, course_info=course_info)
+       
        course_info.code = course_form.code.data
        course_info.title = course_form.title.data
        course_info.description = course_form.description.data

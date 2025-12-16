@@ -85,8 +85,9 @@ def delete_assignment(assignment_id):
     return redirect(url_for('assignments.index'))
 
 @assignments_bp.route('/<int:assignment_id>/edit', methods=['GET','POST'])
+@assignments_bp.route('/<int:assignment_id>/update', methods=['GET','POST'])
 @login_required
-def edit_assignment(assignment_id):
+def update_assignment(assignment_id):
 
     assignment = Assignment.query.filter_by(id=assignment_id).first()
     course = assignment.course
@@ -111,7 +112,7 @@ def edit_assignment(assignment_id):
        db.session.commit()
 
        flash('Assignment edited! Check it on the assignments list', 'success')
-       return redirect(url_for('assignments.index'))
+       return redirect(url_for('assignments.assignment_detail', assignment_id=assignment.id))
 
     return render_template('assignments/update_assignment.html', form=form, assignment=assignment)
 

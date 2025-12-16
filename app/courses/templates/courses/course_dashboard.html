@@ -206,7 +206,7 @@
                 {% if is_course_owner or current_user.is_admin %}
                 <div class="mt-2">
                   <a
-                    href="{{ url_for('assignments.edit_assignment', assignment_id=assignment.id) }}"
+                    href="{{ url_for('assignments.update_assignment', assignment_id=assignment.id) }}"
                     class="btn btn-outline-secondary btn-sm me-1"
                     >Edit</a
                   >
