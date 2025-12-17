@@ -45,11 +45,21 @@ IntelliGrades is a Flask-based web application designed to improve educational w
    pip install -r requirements.txt
    ```
 
-4. **Optional: It is a good practice to delete the db. There is no need to populate it again, it is ready to go!
+4. **Optional: It is a good practice to delete the db. Run the scripts to populate the db and you will be ready to go. 
 
 ```bash
    # Remove old database and recreate
    rm -f app/app.db
+   ```
+
+```bash
+   # Populate db with test users
+   python -m app.scripts.populate_db
+   ```
+
+```bash
+   # courses and more test users
+   python -m app.scripts.populate_courses
    ```
 
 ```bash
@@ -119,6 +129,9 @@ New Announcement
 
 All courses and assignments view as student
 <img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/666a17bf-35ea-47df-885e-25171e7536de" />
+
+All enrolled students in course 
+<img width="1514" height="901" alt="image" src="https://github.com/user-attachments/assets/ff6151e9-dba1-425b-a171-3dc9d36ece9b" />
 
 Grades as student 
 <img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/4ad48607-3493-4e89-bd07-93762e3a7945" />
