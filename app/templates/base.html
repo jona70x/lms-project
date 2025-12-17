@@ -4,120 +4,173 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
-      rel="stylesheet"
-      href="{{url_for('static', filename='styles.css')}}"
-    />
-    <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
     <title>LMS-Proto</title>
-    {% block head %} {% endblock %}
+    {% block head %}{% endblock %}
   </head>
+
   <body>
     <!-- Bootstrap Navbar -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg">
       <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('main.index') }}"
-          >IntelliGrades</a
-        >
+        <a href="{{ url_for('main.index') }}">
+          <img class="navbar-brand" src="{{ url_for('static',
+          filename='images/med-logo.png')}}" height="50" width: auto;
+          alt="IntelliGrades" />
+        </a>
 
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav me-auto">
+            <!-- HOME -->
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+              <a
+                class="nav-link {% if request.path == url_for('main.index') %}active fw-bold{% endif %}"
+                href="{{ url_for('main.index') }}"
+              >
+                Home
+              </a>
             </li>
 
             {% if current_user.is_authenticated %}
 
-            <!-- Visible to ALL logged-in users -->
+            <!-- DASHBOARD -->
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.dashboard') }}">
+              <a
+                class="nav-link {% if request.path.startswith('/dashboard') %}active fw-bold{% endif %}"
+                href="{{ url_for('main.dashboard') }}"
+              >
                 Dashboard
               </a>
             </li>
 
+            <!-- BROWSE COURSES -->
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('courses.courses_list') }}">
+              <a
+                class="nav-link {% if request.path.startswith('/courses') and not request.path.startswith('/courses/my') and not request.path.startswith('/courses/created') %}active fw-bold{% endif %}"
+                href="{{ url_for('courses.courses_list') }}"
+              >
                 Browse Courses
               </a>
             </li>
 
+            <!-- MESSAGES -->
             <li class="nav-item">
-               <a class="nav-link" href="{{ url_for('main.messages') }}">Messages</a>
+              <a
+                class="nav-link {% if request.path.startswith('/messages') %}active fw-bold{% endif %}"
+                href="{{ url_for('main.messages') }}"
+              >
+                Messages
+              </a>
             </li>
 
-            <li class="nav-item">
-               <a class="nav-link position-relative" href="{{ url_for('main.dashboard') }}">
-                   Notifications
-                  {% if notifications and notifications|length > 0 %}
-                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            <!-- NOTIFICATIONS -->
+            <!-- <li class="nav-item">
+              <a
+                class="nav-link position-relative {% if request.path.startswith('/notifications') %}active fw-bold{% endif %}"
+                href="{{ url_for('main.dashboard') }}"
+              >
+                Notifications {% if notifications and notifications|length > 0
+                %}
+                <span
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                >
                   {{ notifications|length }}
-                   </span>
-                   {% endif %}
-               </a>
-            </li>
+                </span>
+                {% endif %}
+              </a>
+            </li> -->
 
-            <!-- STUDENT-only links -->
+            <!-- STUDENT LINKS -->
             {% if current_user.is_student %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('courses.my_courses') }}">
-                My Courses ({{ current_user.get_enrolled_courses_count() }})
+              <a
+                class="nav-link {% if request.path.startswith('/assignments') %}active fw-bold{% endif %}"
+                href="{{ url_for('assignments.index') }}"
+              >
+                My Assignments
               </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.gpa_calculator') }}">
+              <a
+                class="nav-link {% if request.path.startswith('/gpa') %}active fw-bold{% endif %}"
+                href="{{ url_for('main.gpa_calculator') }}"
+              >
                 GPA Calculator
               </a>
             </li>
             {% endif %}
 
-            <!-- PROFESSOR / ADMIN-only links -->
+            <!-- PROFESSOR / ADMIN LINKS -->
             {% if current_user.is_professor or current_user.is_admin %}
             <li class="nav-item">
               <a
-                class="nav-link"
+                class="nav-link {% if request.path.startswith('/courses/created') %}active fw-bold{% endif %}"
                 href="{{ url_for('courses.my_created_courses') }}"
               >
-                My Created Courses
+                My Courses
               </a>
             </li>
+            {% endif %}
 
+            <!-- ADMIN ONLY LINKS -->
+            {% if current_user.is_admin %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('assignments.index') }}">
+              <a
+                class="nav-link {% if request.path.startswith('/assignments') %}active fw-bold{% endif %}"
+                href="{{ url_for('assignments.index') }}"
+              >
                 Assignments
               </a>
             </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('courses.create_course') }}">
-                New Course
-              </a>
-            </li>
             {% endif %} {% endif %}
+            <!-- end authenticated -->
           </ul>
 
           <ul class="navbar-nav">
             {% if not current_user.is_authenticated %}
+            <!-- LOGIN -->
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.register') }}"
-                >Register</a
+              <a
+                class="nav-link {% if request.path.startswith('/auth/login') %}active fw-bold{% endif %}"
+                href="{{ url_for('auth.login') }}"
               >
+                Login
+              </a>
             </li>
+
+            <!-- REGISTER -->
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.path.startswith('/auth/register') %}active fw-bold{% endif %}"
+                href="{{ url_for('auth.register') }}"
+              >
+                Register
+              </a>
+            </li>
+
             {% else %}
-            <li class="nav-item">
+            <!-- LOGGED-IN DISPLAY -->
+            <li class="nav-item ms-auto d-flex align-items-center">
               <span class="navbar-text me-3">
-                Hello, {{ current_user.email }}!
+                {% set username = current_user.email.split('@')[0].capitalize()
+                %} Hello, {{ username }}!
               </span>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+              <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                Logout
+              </a>
             </li>
             {% endif %}
           </ul>
@@ -125,7 +178,6 @@
       </div>
     </nav>
 
-    <!-- Flash messages section -->
     <div class="container mt-3">
       {% with messages = get_flashed_messages(with_categories=true) %} {% if
       messages %} {% for category, message in messages %}
@@ -143,8 +195,8 @@
       {% endfor %} {% endif %} {% endwith %}
     </div>
     <div class="container p-4">
-      <div class="container py-2">{% block body %} {% endblock %}</div>
-      <div class="container py-2">{%block index%} {% endblock %}</div>
+      <div class="container py-2">{% block body %}{% endblock %}</div>
+      <div class="container py-2">{% block index %}{% endblock %}</div>
     </div>
 
     <script

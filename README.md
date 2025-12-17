@@ -97,7 +97,7 @@ Home Page
 Registration
 <img width="1190" height="584" alt="image" src="https://github.com/user-attachments/assets/881cc226-a782-4781-a90e-40ab5daaf560" />
 
-After successfull registration redirects to sign in page
+After successfull registration redirects to log in page
 <img width="1185" height="645" alt="image" src="https://github.com/user-attachments/assets/bacf973a-a708-4425-9ef1-56ab1d0e2fb5" />
 
 Home Page with protected links displaying the user email 

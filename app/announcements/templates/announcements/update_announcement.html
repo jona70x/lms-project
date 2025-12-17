@@ -1,0 +1,60 @@
+{% extends "base.html" %} {% block body %}
+<div class="container mt-5">
+  <h2>Update Announcement</h2>
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <!-- Course info as read-only -->
+        <div class="mb-3">
+          <label class="form-label">Course</label>
+          <input
+            type="text"
+            class="form-control"
+            value="{{ course.code }} - {{ course.title }}"
+            readonly
+            disabled
+          />
+        </div>
+
+        <!-- Title -->
+        <div class="mb-3">
+          {{ form.title.label(class="form-label") }} {{
+          form.title(class="form-control") }} {% if form.title.errors %}
+          <div class="text-danger">
+            {% for error in form.title.errors %}
+            <small>{{ error }}</small>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Content -->
+        <div class="mb-3">
+          {{ form.content.label(class="form-label") }} {{
+          form.content(class="form-control", rows="5") }} {% if
+          form.content.errors %}
+          <div class="text-danger">
+            {% for error in form.content.errors %}
+            <small>{{ error }}</small>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Update and Cancel Buttons -->
+        <div class="d-flex gap-2">
+          {{ form.update }}
+          <a
+            href="{{ url_for('courses.course_dashboard', course_id=announcement.course_id, tab='announcements') }}"
+            class="btn btn-danger border-danger-subtle"
+            >Cancel</a
+          >
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

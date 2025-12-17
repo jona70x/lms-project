@@ -5,7 +5,12 @@ from app.auth.routes import authentication_bp
 from app.main.routes import main_bp
 from app.assignments.routes import assignments_bp
 from app.courses import courses_bp
-from app.models import User, Notification
+from app.announcements import announcements_bp
+"""For login functionality"""
+from flask_login import LoginManager
+from app.models import User, Course, Enrollment, Assignment, StudentAssignment, Announcement
+from flask_login import current_user
+from flask import render_template
 
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
@@ -42,3 +47,14 @@ def create_app():
         return dict(notifications=[])
 
     return app
+# registering main and auth routes
+create_app.register_blueprint(authentication_bp, url_prefix = '/auth')
+create_app.register_blueprint(main_bp, url_prefix = '/')
+create_app.register_blueprint(assignments_bp, url_prefix = '/assignments')
+create_app.register_blueprint(courses_bp, url_prefix = '/courses')
+create_app.register_blueprint(announcements_bp, url_prefix = '/announcements')
+
+# fallback route for app
+@create_app.errorhandler(404)
+def page_not_found(error):
+    return render_template('coming_soon.html'), 404
