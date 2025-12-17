@@ -48,7 +48,7 @@
 
             <!-- Back Button -->
             <a
-              href="javascript:history.back()"
+              href="{{ url_for('courses.course_dashboard', course_id=course.id, tab='assignments') }}"
               class="btn btn-outline-secondary"
             >
               Back

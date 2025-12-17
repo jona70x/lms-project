@@ -289,7 +289,8 @@ def delete_course(course_id):
     course = Course.query.filter_by(id=course_id).first()
     
     if not (current_user.is_admin or course.professor_user == current_user):
-        abort(403)
+        flash("You are not the owner of this course.", 'danger')
+        return redirect(url_for('courses.courses_list'))
     
     # delete course
     db.session.delete(course)

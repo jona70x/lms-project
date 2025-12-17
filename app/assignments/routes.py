@@ -131,14 +131,13 @@ def update_assignment(assignment_id):
     
     form = AssignmentForm()
 
-    if request.method == 'GET' and assignment: 
+    if request.method == 'GET': 
         form.course_id.data = course.id
         form.title.data = assignment.title
         form.description.data = assignment.description
         form.max_points.data = assignment.max_points
         form.due_date.data = assignment.due_date
     
-
     if form.validate_on_submit():
        assignment.title = form.title.data
        assignment.description = form.description.data
@@ -146,7 +145,7 @@ def update_assignment(assignment_id):
        assignment.due_date = form.due_date.data
        db.session.commit()
 
-       flash('Assignment edited! Check it on the assignments list', 'success')
+       flash('Assignment updated successfully!', 'success')
        return redirect(url_for('assignments.assignment_detail', assignment_id=assignment.id))
 
     return render_template('assignments/update_assignment.html', form=form, assignment=assignment, course=course)
