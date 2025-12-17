@@ -32,6 +32,10 @@ def create_app():
     app.register_blueprint(courses_bp, url_prefix="/courses")
     app.register_blueprint(announcements_bp, url_prefix="/announcements")
 
+    # Create database tables if they don't exist
+    with app.app_context():
+        db.create_all()
+
     # Notifications available to all templates
     @app.context_processor
     def inject_notifications():
