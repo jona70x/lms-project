@@ -96,10 +96,10 @@
             {% if current_user.is_student %}
             <li class="nav-item">
               <a
-                class="nav-link {% if request.path.startswith('/courses/my') %}active fw-bold{% endif %}"
-                href="{{ url_for('courses.my_courses') }}"
+                class="nav-link {% if request.path.startswith('/assignments') %}active fw-bold{% endif %}"
+                href="{{ url_for('assignments.index') }}"
               >
-                My Courses ({{ current_user.get_enrolled_courses_count() }})
+                My Assignments
               </a>
             </li>
 

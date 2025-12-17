@@ -3,6 +3,7 @@
 <div class="container mt-5">
   <h2>All Courses & Assignments</h2>
 
+  {% if current_user.is_admin or current_user.is_professor %}
   <div class="mb-3 mt-3 w-10">
     <a
       href="{{ url_for('assignments.create_assignment') }}"
@@ -11,13 +12,14 @@
       ➕ New Assignment
     </a>
   </div>
+  {% endif %}
   <div class="mb-3 mt-3 w-30"></div>
   {% if courses_with_assignments %} {% for item in courses_with_assignments %}
 
   <!-- Course Card -->
-  <div class="card mt-4">
+  <div class="card mt-4 border-success">
     <!-- Course Header -->
-    <div class="card-header bg-primary text-white">
+    <div class="card-header bg-success text-white">
       <h5>
         {{ item.course.code }} - {{ item.course.title }}
         <span class="badge bg-light text-dark float-end">
@@ -34,7 +36,7 @@
     <div class="card-body">
       {% if item.assignments %}
       <table class="table table-striped table-hover">
-        <thead class="table-secondary">
+        <thead class="table-success">
           <tr>
             <th>#</th>
             <th>Assignment Title</th>
@@ -75,28 +77,28 @@
               </small>
             </td>
             <td>
-              Mark as completed |
-              
-              <a class="btn btn-primary"
+              {% if current_user.is_admin or current_user.is_professor %}
+              <a
+                class="btn btn-primary"
                 href="{{ url_for('assignments.assignment_detail', assignment_id=assignment.id) }}"
               >
                 Edit</a
               >
               |
-             <form
-              method="POST"
-              action="{{ url_for('assignments.delete_assignment', assignment_id=assignment.id) }}"
-              style="display: inline"
-            >
-              <button
-                type="submit"
-                class="btn btn-danger"
-                onclick="return confirm('Are you sure you want to delete this assignment?')"
+              <form
+                method="POST"
+                action="{{ url_for('assignments.delete_assignment', assignment_id=assignment.id) }}"
+                style="display: inline"
               >
-                Delete
-              </button>
-            </form>
-              |
+                <button
+                  type="submit"
+                  class="btn btn-danger"
+                  onclick="return confirm('Are you sure you want to delete this assignment?')"
+                >
+                  Delete
+                </button>
+              </form>
+              | {% endif %}
             </td>
           </tr>
 

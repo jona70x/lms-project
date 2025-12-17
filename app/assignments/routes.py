@@ -9,25 +9,42 @@ from app.decorators import roles_required
 
 assignments_bp = Blueprint("assignments", __name__, template_folder='templates')
 
-#displays all the assignments by course -- Only admins can access this page
+#displays all the assignments by course -- Admins see all courses, students see only their enrolled courses
 @assignments_bp.route('/')
 @login_required
 def index():
-    if not current_user.is_admin:
-        flash("You don't have access", 'danger')
-        return redirect(url_for('main.index'))
-    
-    all_courses = Course.query.all()
-
     courses_with_assignments = []
-    for course in all_courses:
-        assignments = course.assignments.all()
-
-        courses_with_assignments.append({
-            'course': course,
-            'assignments': assignments,
-            'assignment_count': len(assignments)
-        })
+    
+    if current_user.is_admin:
+        # Admins see all courses
+        all_courses = Course.query.all()
+        for course in all_courses:
+            assignments = course.assignments.all()
+            courses_with_assignments.append({
+                'course': course,
+                'assignments': assignments,
+                'assignment_count': len(assignments)
+            })
+    elif current_user.is_student:
+        # Students see only their enrolled courses
+        enrolled_courses = current_user.courses.all()
+        for course in enrolled_courses:
+            assignments = course.assignments.all()
+            courses_with_assignments.append({
+                'course': course,
+                'assignments': assignments,
+                'assignment_count': len(assignments)
+            })
+    else:
+        # Professors see only their courses
+        professor_courses = Course.query.filter_by(professor_id=current_user.id).all()
+        for course in professor_courses:
+            assignments = course.assignments.all()
+            courses_with_assignments.append({
+                'course': course,
+                'assignments': assignments,
+                'assignment_count': len(assignments)
+            })
     
     return render_template('assignments/assignments_list.html', courses_with_assignments=courses_with_assignments)
 
@@ -114,14 +131,13 @@ def update_assignment(assignment_id):
     
     form = AssignmentForm()
 
-    if request.method == 'GET' and assignment: 
+    if request.method == 'GET': 
         form.course_id.data = course.id
         form.title.data = assignment.title
         form.description.data = assignment.description
         form.max_points.data = assignment.max_points
         form.due_date.data = assignment.due_date
     
-
     if form.validate_on_submit():
        assignment.title = form.title.data
        assignment.description = form.description.data
@@ -129,7 +145,7 @@ def update_assignment(assignment_id):
        assignment.due_date = form.due_date.data
        db.session.commit()
 
-       flash('Assignment edited! Check it on the assignments list', 'success')
+       flash('Assignment updated successfully!', 'success')
        return redirect(url_for('assignments.assignment_detail', assignment_id=assignment.id))
 
     return render_template('assignments/update_assignment.html', form=form, assignment=assignment, course=course)

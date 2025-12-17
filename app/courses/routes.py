@@ -216,7 +216,7 @@ def course_dashboard(course_id, tab='assignments'):
     # Get announcements for this course from the database
     announcements = Announcement.query.filter_by(course_id=course_id).order_by(Announcement.created_at.desc()).all()
     
-    # Get all student submissions for this course (for instructors)
+    # Get all student submissions for this course 
     student_submissions = {}
     if is_course_owner or current_user.is_admin:
         all_submissions = StudentAssignment.query.join(Assignment).filter(
@@ -283,13 +283,13 @@ def create_course():
 
 # Delete course
 @courses_bp.route('/<int:course_id>/delete', methods=['POST'])
-@roles_required(User.ROLE_PROFESSOR, User.ROLE_ADMIN)
 @login_required
 def delete_course(course_id):
     course = Course.query.filter_by(id=course_id).first()
     
     if not (current_user.is_admin or course.professor_user == current_user):
-        abort(403)
+        flash("You are not the owner of this course.", 'danger')
+        return redirect(url_for('courses.courses_list'))
     
     # delete course
     db.session.delete(course)
