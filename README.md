@@ -45,21 +45,11 @@ IntelliGrades is a Flask-based web application designed to improve educational w
    pip install -r requirements.txt
    ```
 
-4. **Optional: It is a good practice to delete the db and populate it again so testing can be done succesfully.
+4. **Optional: It is a good practice to delete the db. There is no need to populate it again, it is ready to go!
 
 ```bash
    # Remove old database and recreate
    rm -f app/app.db
-   ```
-    
-```bash
-   # Run populate_db to create tables and test user
-python -m app.scripts.populate_db
-   ```
-
-```bash
-   # Run populate_courses to add course data
-   python -m app.scripts.populate_courses
    ```
 
 ```bash
@@ -81,55 +71,71 @@ python -m app.scripts.populate_db
    ```
 
 ## Features
+- Authentication & User Management: Provides secure user registration with role selection, email validation, hashed passwords, login/logout functionality, and role-based access to protected routes.
 
-### Current Features
-- User authentication with proper database schema and form validation with WTForms.
-- Users can login and logout from their accounts.
-- Create, read, delete, and updte operations for courses and assingments.
-- Users can enroll and drop courses.
-- Rerouting and error validation for most of the routes.
-- Protected routes implemented. 
+- Course Management: Enables creation, viewing, updating, and deletion of courses with capacity limits, unique code enforcement, enrollment availability toggles, and owner/admin permissions.
 
-## Screenshots
+- Student Enrollment: Allows students to browse, enroll in, and drop courses while preventing duplicates and enforcing capacity and enrollment rules.
+
+- Course Dashboard: Displays a tabbed dashboard with assignments, grades, submissions, people, and announcements, along with quick course info and role-specific actions.
+
+- Assignment Management:Lets instructors create, update, and delete assignments while students view their relevant tasks, with details pages and contextual course selection.
+
+- Grading System: Instructor in view submissions, grade, and updating scores, while students track assignment status and grades.
+
+- Announcements: Provides instructors with tools to post, update, and delete course announcements visible to enrolled users.
+
+- Academic Tools:Includes a GPA calculator that loads enrolled courses, supports letter-grade input, and computes weighted GPA in real time.
+
+- Dashboard & Notifications: Offers personalized dashboards with role-specific course views.
+
+- UI/UX Features: Features a responsive Bootstrap interface with form validation, flash messages, confirmation dialogs, and role-based visibility for UI elements.
+
+- Security Features: URL redirects, password rules, session management, and permission checks in all db operations. Also a 404 catch all routes. 
+
+## App Preview
 Home Page
-<img width="1167" height="889" alt="image" src="https://github.com/user-attachments/assets/f7fd549a-d939-4f47-828c-a24556035e81" />
+<img width="2996" height="1502" alt="image" src="https://github.com/user-attachments/assets/44e0a49d-309a-41c3-9547-c02a063eed59" />
 
 Registration
-<img width="1190" height="584" alt="image" src="https://github.com/user-attachments/assets/881cc226-a782-4781-a90e-40ab5daaf560" />
+<img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/0824f323-8263-4740-a116-a130f6cd408a" />
 
-After successfull registration redirects to log in page
-<img width="1185" height="645" alt="image" src="https://github.com/user-attachments/assets/bacf973a-a708-4425-9ef1-56ab1d0e2fb5" />
+Course Dashboard as Professor
+<img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/6e13e26a-b91f-4f38-88e0-67480a861588" />
 
-Home Page with protected links displaying the user email 
-<img width="1416" height="802" alt="image" src="https://github.com/user-attachments/assets/d315df77-64e7-48df-9e5f-e7dec350c272" />
+New Assignment 
+<img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/9db5bbd9-773c-4abd-9a09-7f0c6ff419bb" />
 
-Creating a new Course
-<img width="1426" height="928" alt="image" src="https://github.com/user-attachments/assets/12e38009-5cc5-4248-8532-6f263bc8289a" />
+Repeated Course Title
+<img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/fa3d6e6a-b11b-4125-a92b-a72374df632c" />
 
-All courses page with new course displaying
-<img width="1509" height="995" alt="image" src="https://github.com/user-attachments/assets/5594b2e3-0a2f-448c-a62e-2d8fee6dc7b4" />
+Student Submissions -- Professor View
 
-Newly created course details
-<img width="1512" height="636" alt="image" src="https://github.com/user-attachments/assets/7a1cf5c8-c272-4b01-9dbe-3762051e6e75" />
+<img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/d103eefa-2ef1-4efc-b6b3-99d0b27f4df3" />
 
-All courses and assignments
-<img width="1286" height="986" alt="image" src="https://github.com/user-attachments/assets/0ef88d05-838e-41b5-bc61-5ec88fe53cd1" />
+New Announcement 
+
+<img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/cca27618-c499-4d2e-b35d-b48c48534892" />
+
+All courses and assignments view as student
+<img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/666a17bf-35ea-47df-885e-25171e7536de" />
+
+Grades as student 
+<img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/4ad48607-3493-4e89-bd07-93762e3a7945" />
+
+Assignments as student
+<img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/feb7ca5c-8e41-478f-b59e-8709f59c724c" />
+
+Gpa calculator
+<img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/a50de12a-91e1-4c4a-be6c-0a18ca29499a" />
+
+
 
 ## Meet the Team
 
 - Sofware Engineer: Jonathan Carpio
 - Project Manager: Rahaf Mohammed
 - Tester/Developer: Vern Toor
-
-## App Preview
-
-**index.html**
-
-<img width="990" height="954" alt="Screenshot 2025-11-15 at 11 15 01 PM" src="https://github.com/user-attachments/assets/c60deb43-742e-41a6-a460-2e550622fcd1" />
-
-**login.html rendered on /auth/login route with flashed messages**
-
-<img width="990" height="954" alt="Screenshot 2025-11-15 at 11 15 07 PM" src="https://github.com/user-attachments/assets/b74a2c8d-a27c-4c83-9b9a-9a4ed72af4eb" />
 
 ## UI Sketches
 
