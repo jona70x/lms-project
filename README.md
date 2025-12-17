@@ -126,6 +126,10 @@ Grades as student
 Assignments as student
 <img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/feb7ca5c-8e41-478f-b59e-8709f59c724c" />
 
+Gpa calculator
+<img width="3014" height="1790" alt="image" src="https://github.com/user-attachments/assets/a50de12a-91e1-4c4a-be6c-0a18ca29499a" />
+
+
 
 ## Meet the Team
 
