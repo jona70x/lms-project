@@ -26,7 +26,7 @@ def register():
         db.session.commit()
 
         # if success display message
-        flash('Registration successful!, Please login in', 'success')
+        flash('Registration successful! Please login in', 'success')
 
         return redirect(url_for('auth.login'))
     
@@ -57,7 +57,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         # check if user exist and password matches
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username of password', 'danger')
+            flash('Invalid username or password', 'danger')
             return redirect(url_for('auth.login'))
         # log in user
         login_user(user, remember=form.remember_me.data)

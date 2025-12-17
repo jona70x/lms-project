@@ -63,3 +63,12 @@ body,
 .semibold {
   font-weight: 600;
 }
+
+.navbar .nav-link:hover {
+  color: #2a9d8f !important;
+}
+
+.navbar .nav-link.active {
+  color: #2a9d8f !important;
+  font-weight: 600;
+}

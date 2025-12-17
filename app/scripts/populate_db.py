@@ -1,41 +1,48 @@
 from app import create_app
 from app.config import db
-from app.models import User, Course, Assignment, Enrollment, StudentAssignment
+from app.models import User
 
-# create_app is already a Flask instance, not a function
-with create_app.app_context():
-    # Drop all tables and recreate 
-    db.drop_all()
-    db.create_all()
-    print("Database tables created successfully")
-    
-    # Create test user (admin)
-    user_test_admin = User(
-        email='test@admin.com',
-        avatar_url='https://ui-avatars.com/api/?name=Test+User',
-        role='admin'
-    )
-    user_test_admin.set_password('password123')  # Test password
+DEFAULT_PASSWORD = "password123"  # demo password
 
-    # Create test user (student)
-    user_test_student = User(
-        email='test@student.com',
-        avatar_url='https://ui-avatars.com/api/?name=Test+User',
-        role='student'
-    )
-    user_test_student.set_password('password123')  # Test password
+def populate_users():
+    app = create_app()
 
-    # Create test user (professor)
-    user_test_professor = User(
-        email='test@professor.com',
-        avatar_url='https://ui-avatars.com/api/?name=Test+User',
-        role='professor'
-    )
-    user_test_professor.set_password('password123')  # Test password
-    
-    db.session.add(user_test_admin)
-    db.session.add(user_test_student)
-    db.session.add(user_test_professor)
-    db.session.commit()
-    
-    print("Test users created")
+    with app.app_context():
+        # Start from a clean database
+        db.drop_all()
+        db.create_all()
+        print("Database tables created successfully")
+
+        users_data = [
+            # Demo admins
+            {"email": "test@admin.com",                "role": User.ROLE_ADMIN},
+            {"email": "admin@intelligrades.test",      "role": User.ROLE_ADMIN},
+
+            # Demo professors
+            {"email": "test@professor.com",           "role": User.ROLE_PROFESSOR},
+            {"email": "john.doe@university.edu",      "role": User.ROLE_PROFESSOR},
+            {"email": "carlos.rojas@university.edu",  "role": User.ROLE_PROFESSOR},
+            {"email": "michael.green@university.edu", "role": User.ROLE_PROFESSOR},
+            {"email": "emily.samson@university.edu",  "role": User.ROLE_PROFESSOR},
+            {"email": "david.bee@university.edu",     "role": User.ROLE_PROFESSOR},
+            {"email": "taylor.dave@university.edu",   "role": User.ROLE_PROFESSOR},
+            
+
+            # Demo student (there are also other demo students in populate_courses)
+            {"email": "test@student.com",             "role": User.ROLE_STUDENT},
+        ]
+
+        for data in users_data:
+            user = User(
+                email=data["email"],
+                avatar_url=f"https://ui-avatars.com/api/?name={data['email']}",
+                role=data["role"],
+            )
+            user.set_password(DEFAULT_PASSWORD)
+            db.session.add(user)
+
+        db.session.commit()
+        print(f"{len(users_data)} users created with password '{DEFAULT_PASSWORD}'")
+
+if __name__ == "__main__":
+    populate_users()
