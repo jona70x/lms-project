@@ -31,7 +31,11 @@
           alt="IntelliGrades" />
         </a>
 
-        <div class="collapse navbar-collapse">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
             <!-- HOME -->
             <li class="nav-item">
@@ -139,7 +143,7 @@
             <!-- end authenticated -->
           </ul>
 
-          <ul class="navbar-nav">
+          <ul class="navbar-nav ms-auto">
             {% if not current_user.is_authenticated %}
             <!-- LOGIN -->
             <li class="nav-item">
@@ -163,11 +167,13 @@
 
             {% else %}
             <!-- LOGGED-IN DISPLAY -->
-            <li class="nav-item ms-auto d-flex align-items-center">
+            <li class="nav-item">
               <span class="navbar-text me-3">
                 {% set username = current_user.email.split('@')[0].capitalize()
                 %} Hello, {{ username }}!
               </span>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{{ url_for('auth.logout') }}">
                 Logout
               </a>
