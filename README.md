@@ -71,27 +71,27 @@ IntelliGrades is a Flask-based web application designed to improve educational w
    ```
 
 ## Features
--Authentication & User Management: Provides secure user registration with role selection, email validation, hashed passwords, login/logout functionality, and role-based access to protected routes.
+- Authentication & User Management: Provides secure user registration with role selection, email validation, hashed passwords, login/logout functionality, and role-based access to protected routes.
 
--Course Management: Enables creation, viewing, updating, and deletion of courses with capacity limits, unique code enforcement, enrollment availability toggles, and owner/admin permissions.
+- Course Management: Enables creation, viewing, updating, and deletion of courses with capacity limits, unique code enforcement, enrollment availability toggles, and owner/admin permissions.
 
--Student Enrollment: Allows students to browse, enroll in, and drop courses while preventing duplicates and enforcing capacity and enrollment rules.
+- Student Enrollment: Allows students to browse, enroll in, and drop courses while preventing duplicates and enforcing capacity and enrollment rules.
 
--Course Dashboard: Displays a tabbed dashboard with assignments, grades, submissions, people, and announcements, along with quick course info and role-specific actions.
+- Course Dashboard: Displays a tabbed dashboard with assignments, grades, submissions, people, and announcements, along with quick course info and role-specific actions.
 
--Assignment Management:Lets instructors create, update, and delete assignments while students view their relevant tasks, with details pages and contextual course selection.
+- Assignment Management:Lets instructors create, update, and delete assignments while students view their relevant tasks, with details pages and contextual course selection.
 
--Grading System: Instructor in view submissions, grade, and updating scores, while students track assignment status and grades.
+- Grading System: Instructor in view submissions, grade, and updating scores, while students track assignment status and grades.
 
--Announcements: Provides instructors with tools to post, update, and delete course announcements visible to enrolled users.
+- Announcements: Provides instructors with tools to post, update, and delete course announcements visible to enrolled users.
 
--Academic Tools:Includes a GPA calculator that loads enrolled courses, supports letter-grade input, and computes weighted GPA in real time.
+- Academic Tools:Includes a GPA calculator that loads enrolled courses, supports letter-grade input, and computes weighted GPA in real time.
 
--Dashboard & Notifications: Offers personalized dashboards with role-specific course views.
+- Dashboard & Notifications: Offers personalized dashboards with role-specific course views.
 
--UI/UX Features: Features a responsive Bootstrap interface with form validation, flash messages, confirmation dialogs, and role-based visibility for UI elements.
+- UI/UX Features: Features a responsive Bootstrap interface with form validation, flash messages, confirmation dialogs, and role-based visibility for UI elements.
 
--Security Features: URL redirects, password rules, session management, and permission checks in all db operations. Also a 404 catch all routes. 
+- Security Features: URL redirects, password rules, session management, and permission checks in all db operations. Also a 404 catch all routes. 
 
 ## Screenshots
 Home Page
