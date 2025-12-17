@@ -7,9 +7,7 @@ from app.assignments.routes import assignments_bp
 from app.courses import courses_bp
 from app.announcements import announcements_bp
 """For login functionality"""
-from flask_login import LoginManager
-from app.models import User, Course, Enrollment, Assignment, StudentAssignment, Announcement
-from flask_login import current_user
+from app.models import User, Course, Enrollment, Assignment, StudentAssignment, Announcement, Notification
 from flask import render_template
 
 login_manager = LoginManager()
@@ -32,6 +30,7 @@ def create_app():
     app.register_blueprint(main_bp)  # <-- no prefix, so "/" works
     app.register_blueprint(assignments_bp, url_prefix="/assignments")
     app.register_blueprint(courses_bp, url_prefix="/courses")
+    app.register_blueprint(announcements_bp, url_prefix="/announcements")
 
     # Notifications available to all templates
     @app.context_processor
@@ -46,15 +45,9 @@ def create_app():
             return dict(notifications=notifications)
         return dict(notifications=[])
 
-    return app
-# registering main and auth routes
-create_app.register_blueprint(authentication_bp, url_prefix = '/auth')
-create_app.register_blueprint(main_bp, url_prefix = '/')
-create_app.register_blueprint(assignments_bp, url_prefix = '/assignments')
-create_app.register_blueprint(courses_bp, url_prefix = '/courses')
-create_app.register_blueprint(announcements_bp, url_prefix = '/announcements')
+    # Error handler for 404 - Not Found
+    @app.errorhandler(404)
+    def page_not_found(error):
+        return render_template('coming_soon.html'), 404
 
-# fallback route for app
-@create_app.errorhandler(404)
-def page_not_found(error):
-    return render_template('coming_soon.html'), 404
+    return app
