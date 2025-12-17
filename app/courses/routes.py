@@ -283,7 +283,6 @@ def create_course():
 
 # Delete course
 @courses_bp.route('/<int:course_id>/delete', methods=['POST'])
-@roles_required(User.ROLE_PROFESSOR, User.ROLE_ADMIN)
 @login_required
 def delete_course(course_id):
     course = Course.query.filter_by(id=course_id).first()
